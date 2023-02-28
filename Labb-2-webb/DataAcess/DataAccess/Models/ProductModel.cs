@@ -12,11 +12,13 @@ public class ProductModel
     [BsonElement]
     public string ImageUrl { get; set; }
     [BsonElement]
-    public string Describe { get; set; }
+    public string Description { get; set; }
+    [BsonElement]
+    public bool IsWeightable { get; set; }
     [BsonElement]
     public decimal Price { get; set; }
     [BsonElement]
-    public int CategoryId { get; set; }
+    public string CategoryId { get; set; }
     [BsonElement]
     public bool Status { get; set; }
 }

@@ -9,7 +9,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DataAccess\**" />
+    <Content Remove="DataAccess\**" />
+    <EmbeddedResource Remove="DataAccess\**" />
+    <None Remove="DataAccess\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="DataAccess\Context\UserContext.cs" />
+    <Compile Include="DataAccess\Interfaces\ICategoryRepository.cs" />
+    <Compile Include="DataAccess\Interfaces\IProductRepository.cs" />
+    <Compile Include="DataAccess\Models\CategoryModel.cs" />
+    <Compile Include="DataAccess\Models\ProductModel.cs" />
+    <Compile Include="DataAccess\Models\UserModel.cs" />
+    <Compile Include="DataAccess\Repositories\CategoryRepository.cs" />
+    <Compile Include="DataAccess\Repositories\ProductRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="MongoDB.Driver" Version="2.19.0" />
   </ItemGroup>
 

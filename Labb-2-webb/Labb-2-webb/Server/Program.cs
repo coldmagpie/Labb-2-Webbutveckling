@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.ResponseCompression;
 using System.Net.Http;
+using Labb_2_webb.Server.Extensions;
+using MongoDB.Bson;
+using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,8 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<IProductRepository<ProductDto, ProductModel>, ProductRepository>();
-builder.Services.AddHttpClient();
-
+builder.Services.AddScoped<ICategoryRepository<CategoryModel, CategoryDto>, CategoryRepository>();
+//builder.Services.AddHttpClient();
+builder.Services.AddDbContext<UserContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("UserDb");
+    options.UseSqlServer(connectionString);
+});
+builder.Services.AddScoped<IAuthService, AuthService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,44 +38,10 @@ app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-app.MapPost("/createproduct", async (IProductRepository<ProductDto, ProductModel> repo, ProductDto dto) =>
-{
-    var serviceResponse = await repo.AddAsync(dto);
-    if (!serviceResponse.Success)
-    {
-        return Results.BadRequest(serviceResponse.Message);
-    }
-    return Results.Ok(serviceResponse.Data);
-  
-});
-app.MapGet("/getproducts", async (IProductRepository<ProductDto, ProductModel> repo) =>
-{
-    var serviceResponse = await repo.GetAllAsync();
-    if (serviceResponse.Success)
-    {
-        return Results.Ok(serviceResponse.Data);
-    }
-    return Results.BadRequest(serviceResponse.Message);
-});
 
-app.MapGet("/getproduct/{name}", async (IProductRepository<ProductDto, ProductModel> repo, string name) =>
-{
-    var serviceResponse = await repo.GetProductByNameAsync(name);
-    if (!serviceResponse.Success)
-    {
-        return Results.BadRequest(serviceResponse.Message);
-    }
-    return Results.Ok(serviceResponse.Data);
-});
-app.MapGet("/getproduct/{number}", async (IProductRepository<ProductDto, ProductModel> repo, string number) =>
-{
-    var serviceResponse = await repo.GetProductByNameAsync(number);
-    if (!serviceResponse.Success)
-    {
-        return Results.BadRequest(serviceResponse.Message);
-    }
-    return Results.Ok(serviceResponse.Data);
-});
+app.MapAuthEndpoints();
+app.MapProductEndpoints();
+app.MapCategoryEndpoints();
 
 
 app.UseRouting();
