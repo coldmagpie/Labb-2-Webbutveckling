@@ -1,0 +1,50 @@
+@using WebbLabb2.Client.Services.ProductService
+@using WebbLabb2.Shared.DTOs
+@inject IProductService productService
+@implements IDisposable
+@inject HttpClient client
+
+
+@if (productService.Products is null || productService.Products.Count <= 0)
+{
+    <div>@productService.Message</div>
+}
+else
+{
+       <div class="container">
+           <div class="row">
+               <div class="col-1"></div>
+               @foreach (var product in productService.Products)
+               {
+                   <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
+                       <a href="@("product/" + product.Id)">
+                           <img src="@product.Image" class="card-img-top mt-3" alt="Img">
+                       </a>
+                       <div class="card-body">
+                           <h4 class="card-title">@product.Name</h4>
+                           <h6 class="card-subtitle mb-2 text-muted">@("nr." + product.Number)</h6>
+                           <p class="card-text">@product.Description</p>
+                           <h6 class="card-text fw-bolder">@product.Price /@(product.IsWeightable ? "kg" : "st")</h6>
+                       </div>
+                   </div>
+               }
+               <div class="col-1"></div>
+           </div>
+    </div>
+}
+
+
+@code {
+
+    private List<ProductDto> Products = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        productService.ProductsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        productService.ProductsChanged -= StateHasChanged;
+    }
+}

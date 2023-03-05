@@ -1,9 +1,43 @@
 ﻿@page "/"
+@page "/category/{category}"
+@page "/search/{searchText}"
+@using WebbLabb2.Client.Services.ProductService
+@using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal
+@inject IProductService productService
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Products</PageTitle>
 
-<h1>Hello, world!</h1>
+<GetProducts />
 
-Welcome to your new app.
+<div class="alert alert-warning" role="alert">@message</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code
+{
+    [Parameter]
+    public string? category { get; set; } = null;
+
+    [Parameter]
+    public string? searchText { get; set; } = null;
+
+    private string? message { get; set; }= string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (searchText != null)
+        {
+           var products = productService.GetProductBySearchText(searchText);
+            if (products is null )
+            {
+                message = "Sorry, There is no product matchs your search";
+            }
+        }
+        else
+        {
+            var products = productService.GetProducts(category);
+            if (products is null)
+            {
+                message = "Sorry, There is no product matchs your search";
+            }
+        }
+    }
+}

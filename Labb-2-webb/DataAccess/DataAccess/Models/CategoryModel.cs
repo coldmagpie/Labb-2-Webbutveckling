@@ -1,11 +1,8 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿
+namespace DataAccess.DataAccess.Models;
 
 public class CategoryModel
 {
-    [BsonId]
-    public ObjectId Id { get; set; }
-    [BsonElement]
+    public int Id { get; set; }
     public string Name { get; set; }
 }
-

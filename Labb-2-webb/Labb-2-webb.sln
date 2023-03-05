@@ -5,11 +5,11 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{E0EF8423-3C8F-480C-9A8A-7E802FF78B3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebbLabb2.Server", "WebbLabb2\Server\WebbLabb2.Server.csproj", "{FB63A909-D440-4B57-BC75-015DC53D8A61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebbLabb2.Server", "WebbLabb2\Server\WebbLabb2.Server.csproj", "{FB63A909-D440-4B57-BC75-015DC53D8A61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebbLabb2.Client", "WebbLabb2\Client\WebbLabb2.Client.csproj", "{C8AADFF6-5C7F-42F3-94FB-53798F45A5B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebbLabb2.Client", "WebbLabb2\Client\WebbLabb2.Client.csproj", "{C8AADFF6-5C7F-42F3-94FB-53798F45A5B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebbLabb2.Shared", "WebbLabb2\Shared\WebbLabb2.Shared.csproj", "{F3750C7E-8D69-4E19-9F64-C3002BA7095F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebbLabb2.Shared", "WebbLabb2\Shared\WebbLabb2.Shared.csproj", "{F3750C7E-8D69-4E19-9F64-C3002BA7095F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

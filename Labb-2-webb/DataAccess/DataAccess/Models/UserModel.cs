@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
+﻿namespace DataAccess.DataAccess.Models;
 
 public class UserModel
 {
@@ -11,5 +10,5 @@ public class UserModel
     public string Adress { get; set; }
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
+    public List<OrderModel>? Orders { get; set; }
 }
-

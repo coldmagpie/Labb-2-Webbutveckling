@@ -1,4 +1,7 @@
-﻿namespace WebbLabb2.Server.Services.AuthService
+﻿using DataAccess.DataAccess.Models;
+using WebbLabb2.Shared;
+
+namespace WebbLabb2.Server.Services.AuthService
 {
     public interface IAuthService
     {

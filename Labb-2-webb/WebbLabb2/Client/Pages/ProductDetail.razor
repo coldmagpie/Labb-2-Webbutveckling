@@ -1,0 +1,46 @@
+﻿@page "/product/{id:int}"
+@using WebbLabb2.Client.Services.ProductService
+@using WebbLabb2.Shared.DTOs
+@inject IProductService ProductService
+
+@if (product == null)
+{
+    <span>@message</span>
+}
+else
+{
+    <div class="container">
+        <div class="row mt-1 justify-content-center align-items-center">
+            <div class="col-10 m-0 p-0">
+                @if (!string.IsNullOrEmpty(product.Image))
+                {
+                    <img class="image" src="@product.Image" alt="@product.Name"/>
+                }
+            </div>
+            <div class="col-10 m-0 p-0">
+                <h2 class="mb-1">@product.Name</h2>
+                <h5 class="text-muted">@product.Description</h5>
+                <h6 class="text-muted">@("Nr." + product.Number)</h6>
+                <button class="btn btn-primary mt-2" @*@onclick="AddToCart"*@>
+                    <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart
+                </button>
+            </div>
+        </div>
+        
+    </div>
+
+}
+
+@code {
+    private ProductDto? product = null;
+    private string message = string.Empty;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        message = "Loading product...";
+        product = await ProductService.GetProductById(Id);
+    }
+}

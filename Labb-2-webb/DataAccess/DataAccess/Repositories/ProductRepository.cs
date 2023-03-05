@@ -1,35 +1,31 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using DataAccess.DataAccess.DataContext;
+using DataAccess.DataAccess.Interfaces;
+using DataAccess.DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
+using WebbLabb2.Shared;
+using WebbLabb2.Shared.DTOs;
 
-public class ProductRepository : IProductRepository<ProductDto, ProductModel>
+namespace DataAccess.DataAccess.Repositories;
+
+public class ProductRepository : IProductRepository<ProductModel, ProductDto>
 {
-    private readonly IMongoCollection<ProductModel> _productCollection;
-    private readonly ICategoryRepository<CategoryModel, CategoryDto> _categoryRepository;
-    public ProductRepository(ICategoryRepository<CategoryModel, CategoryDto> categoryRepository)
-    {
-        var databaseName = "Store";
-        var connectionString = $"mongodb://localhost:27017";
+    private readonly StoreContext _storeContext;
 
-        var client = new MongoClient(connectionString);
-        var database = client.GetDatabase(databaseName);
-        _productCollection = database.GetCollection<ProductModel>
-            ("products", new() { AssignIdOnInsert = true });
-        _categoryRepository = categoryRepository;
+    public ProductRepository(StoreContext storeContext)
+    {
+        _storeContext = storeContext;
     }
 
     public async Task<ServiceResponse<ProductModel>> AddProductAsync(ProductDto dto)
     {
         var response = new ServiceResponse<ProductModel>();
-        var filter = Builders<ProductModel>.Filter.Where(p => p.Name == dto.Name || p.Number == dto.Number);
-        var exist = await _productCollection.Find(filter).AnyAsync();
+        var exist = await _storeContext.Products.AnyAsync(p => p.Name.Equals(dto.Name) || p.Number.Equals(dto.Number));
         if (exist)
         {
-            response.Success = false;
-            response.Message = $"Product already exists!";
+            response.Error = true;
+            response.Message = "This product already exists";
         }
-       
+
         var newProduct = new ProductModel()
         {
             Number = dto.Number,
@@ -41,155 +37,163 @@ public class ProductRepository : IProductRepository<ProductDto, ProductModel>
             Price = dto.Price,
             Status = dto.Status
         };
-        await _productCollection.InsertOneAsync(newProduct);
-        response.Success = true;
-        response.Data = newProduct;
-        
+        await _storeContext.Products.AddAsync(newProduct);
+        await _storeContext.SaveChangesAsync();
+        return new ServiceResponse<ProductModel>
+        {   Error = false,
+            Message = "Product added!",
+            Data = newProduct
+        };
+    }
+
+
+    public async Task<ServiceResponse<List<ProductModel>>> GetAllAsync()
+    {
+        var response = new ServiceResponse<List<ProductModel>>();
+        var products = await _storeContext.Products.ToListAsync();
+        if (products is null)
+        {
+            response.Error = true;
+            response.Message = $"Sorry, this is no product";
+        }
+
+        response.Error = false;
+        response.Data = products;
+
         return response;
     }
 
-    public async Task <ServiceResponse<ProductModel>>DeleteProductAsync(ObjectId id)
+
+    public async Task<ServiceResponse<ProductModel>> GetProductByNumberAsync(string number)
     {
         var response = new ServiceResponse<ProductModel>();
-        var filter = Builders<ProductModel>.Filter.Eq(p => p.Id, id);
-        if (filter is null)
-        {
-            response.Success = false;
-            response.Message = $"Sorry, this product doesn't exist";
-        }
-        else
-        {
-            await _productCollection.DeleteOneAsync(filter);
-            response.Success = true;
-            response.Message = $"Product was deleted successfully";
-        }
-        return response;
-    }
-
-    public async Task<ServiceResponse<ProductDto>> GetProductByNumberAsync(string number)
-    {
-        var response = new ServiceResponse<ProductDto>();
-        var filter = Builders<ProductModel>.Filter.Eq(p => p.Number, number);
-        var product = await _productCollection.Find(filter).FirstOrDefaultAsync();
+        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Number.Equals(number));
         if (product is null)
         {
-            response.Success = false;
+            response.Error = true;
             response.Message = $"Sorry, this product doesn't exist";
         }
         else
         {
-            response.Success = true;
-            response.Data = new ProductDto
-            {
-                Number = product.Number,
-                Name = product.Name,
-                CategoryId = product.CategoryId,
-                Description = product.Description,
-                IsWeightable = product.IsWeightable,
-                Price = product.Price,
-                Image = product.ImageUrl,
-                Status = product.Status
-            };
+            response.Data = product;
         }
 
         return response;
     }
 
-    public async Task<ServiceResponse<ProductDto>> GetProductByNameAsync(string name)
+    public async Task<ServiceResponse<ProductModel>> GetProductByIdAsync(int id)
     {
-        var response = new ServiceResponse<ProductDto>();
-        var filter = Builders<ProductModel>.Filter.Eq(p => p.Name, name);
-        var product = await _productCollection.Find(filter).FirstOrDefaultAsync();
+
+        var response = new ServiceResponse<ProductModel>();
+        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Id == id);
         if (product is null)
         {
-            response.Success = false;
+            response.Error = true;
             response.Message = $"Sorry, this product doesn't exist";
         }
         else
+            //{
+            //    response.Error = false;
+            //    response.Data = new ProductDto
+            //    {
+            //        Id = product.Id,
+            //        Number = product.Number,
+            //        Name = product.Name,
+            //        CategoryId = product.CategoryId,
+            //        Description = product.Description,
+            //        IsWeightable = product.IsWeightable,
+            //        Price = product.Price,
+            //        Image = product.ImageUrl,
+            //        Status = product.Status
+            //    };
+            //}
         {
-            response.Success = true;
-            response.Data = new ProductDto
-            {
-                Number = product.Number,
-                Name = product.Name,
-                CategoryId = product.CategoryId,
-                Description = product.Description,
-                IsWeightable = product.IsWeightable,
-                Price = product.Price,
-                Image = product.ImageUrl,
-                Status = product.Status
-            };
+            response.Error = false;
+            response.Data = product;
+        }
+        return response;
+    }
+
+    public async Task<ServiceResponse<ProductModel>> GetProductByNameAsync(string name)
+    {
+        var response = new ServiceResponse<ProductModel>();
+        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Name.Equals(name));
+        if (product is null)
+        {
+            response.Error = true;
+            response.Message = $"Sorry, this product doesn't exist";
+        }
+        else
+            //{
+            //    response.Error = false;
+            //    response.Data = new ProductDto
+            //    {
+            //        Id = product.Id,
+            //        Number = product.Number,
+            //        Name = product.Name,
+            //        CategoryId = product.CategoryId,
+            //        Description = product.Description,
+            //        IsWeightable = product.IsWeightable,
+            //        Price = product.Price,
+            //        Image = product.ImageUrl,
+            //        Status = product.Status
+            //    };
+            //}{
+        {
+            response.Error = false;
+            response.Data = product;
         }
 
         return response;
     }
 
-    public async Task<ServiceResponse<List<ProductDto>>> GetProductsByCategory(string name)
+    public async Task<ServiceResponse<List<ProductModel>>> GetProductsByCategory(string name)
     {
-        var category = await _categoryRepository.GetCategoryByName(name.ToLower());
+        var category = await _storeContext.Categories.FirstOrDefaultAsync(c => c.Name.Equals(name));
         if (category is null)
         {
-            return new ServiceResponse<List<ProductDto>>
+            return new ServiceResponse<List<ProductModel>>
             {
-                Success = false,
+                Error = true,
                 Message = "Sorry, category not found!"
             };
         }
 
-        var productFilter = Builders<ProductModel>.Filter.Eq(p => p.CategoryId, category.Id.ToString());
-        var products = await _productCollection.Find(productFilter).ToListAsync();
-
-        return new ServiceResponse<List<ProductDto>>
+        var productList = await _storeContext.Products.Where(p=>p.CategoryId == category.Id).ToListAsync();
+        return new ServiceResponse<List<ProductModel>>
         {
-            Success = true,
-            Data = ConvertToDto(products)
+            Error = false,
+            Data = productList
         };
     }
 
-    public async Task<ServiceResponse<List<ProductDto>>> GetProductsBySearchText(string text)
+    public async Task<ServiceResponse<List<ProductModel>>> GetProductsBySearchText(string text)
     {
-        var response = new ServiceResponse<List<ProductDto>>();
-        var products = await _productCollection
-            .Find(p => p.Name.ToLower().Contains(text.ToLower()) ||
-                       p.Description.ToLower().Contains(text.ToLower()))
+        var response = new ServiceResponse<List<ProductModel>>();
+        var products = await _storeContext.Products
+            .Where(p => p.Name.ToLower().Contains(text.ToLower()) ||
+                        p.Description.ToLower().Contains(text.ToLower()) || p.Number.Contains(text))
             .ToListAsync();
         if (products.Count == 0)
         {
-            response.Success = false;
+            response.Error = true;
             response.Message = $"Sorry, no result found";
         }
         else
         {
-            response.Success = true;
-            response.Data = ConvertToDto(products);
+            response.Error = false;
+            response.Data = products;
         };
         return response;
     }
 
-    public async Task<ServiceResponse<List<ProductDto>>> GetAllAsync()
+    public async Task<ServiceResponse<ProductModel>> UpdateAsync(int id, ProductDto dto)
     {
-        var response = new ServiceResponse<List<ProductDto>>();
-        var products = await _productCollection.Find(_ => true).ToListAsync();
-        if (products is null)
-        {
-            response.Success = false;
-            response.Message = $"Sorry, this is no product";
-        }
-  
-        response.Success = true;
-        response.Data = ConvertToDto(products);
-        
-        return response;
-    }
-
-    public async Task<ServiceResponse<ProductDto>> UpdateAsync(ObjectId id, ProductDto dto)
-    {
-        var response = new ServiceResponse<ProductDto>();
-        var filter = Builders<ProductModel>.Filter.Eq(p => p.Id, id);
-        var product = await _productCollection.Find(filter).FirstOrDefaultAsync();
+        var response = new ServiceResponse<ProductModel>();
+        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Id == id);
         if (product is null)
         {
-            response.Success = false;
+            response.Error = true;
             response.Message = $"Sorry, this product doesn't exist";
         }
         else
@@ -202,61 +206,58 @@ public class ProductRepository : IProductRepository<ProductDto, ProductModel>
             product.ImageUrl = dto.Image;
             product.Price = dto.Price;
             product.Status = dto.Status;
-            await _productCollection.ReplaceOneAsync(p => p.Id == id, product);
-            response.Success = true;
+            await _storeContext.SaveChangesAsync();
+            response.Error = false;
 
-            response.Data = new ProductDto
-            {
-                Number = product.Number,
-                Name = product.Name,
-                CategoryId = product.CategoryId.ToString(),
-                Description = product.Description,
-                IsWeightable = product.IsWeightable,
-                Image = product.ImageUrl,
-                Price = product.Price,
-                Status = product.Status
-            };
+            //response.Data = new ProductDto
+            //{
+            //    Id = product.Id,
+            //    Number = product.Number,
+            //    Name = product.Name,
+            //    CategoryId = product.CategoryId,
+            //    Description = product.Description,
+            //    IsWeightable = product.IsWeightable,
+            //    Image = product.ImageUrl,
+            //    Price = product.Price,
+            //    Status = product.Status
+            //};
         }
-        
+
         return response;
     }
-    private List<ProductDto> ConvertToDto(List<ProductModel> products)
+    public async Task<ServiceResponse<ProductModel>> DeleteProductAsync(int id)
     {
-        return products.Select(p => new ProductDto
+        var response = new ServiceResponse<ProductModel>();
+        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Id == id);
+        if (product is null)
         {
-            Number = p.Number,
-            Name = p.Name,
-            CategoryId = p.CategoryId,
-            Description = p.Description,
-            IsWeightable = p.IsWeightable,
-            Price = p.Price,
-            Image= p.ImageUrl,
-            Status = p.Status
-        }).ToList();
+            response.Error = true;
+            response.Message = $"Sorry, this product doesn't exist";
+        }
+        else
+        {
+            _storeContext.Products.Remove(product);
+            await _storeContext.SaveChangesAsync();
+            response.Error = false;
+            response.Message = $"Product was deleted successfully";
+        }
+        return response;
     }
 
-    private List<ProductModel> ConvertToModel(List<ProductDto> products)
-    {
-        return products.Select(p => new ProductModel
-        {
-            Number = p.Number,
-            Name = p.Name,
-            CategoryId = p.CategoryId,
-            Description = p.Description,
-            IsWeightable = p.IsWeightable,
-            Price = p.Price,
-            ImageUrl = p.Image,
-            Status = p.Status
-        }).ToList();
-    }
+    //private List<ProductDto> ConvertToDto(List<ProductModel> products)
+    //{
+    //    return products.Select(p => new ProductDto
+    //    {
+    //        Id = p.Id,
+    //        Number = p.Number,
+    //        Name = p.Name,
+    //        CategoryId = p.CategoryId,
+    //        Description = p.Description,
+    //        IsWeightable = p.IsWeightable,
+    //        Price = p.Price,
+    //        Image = p.ImageUrl,
+    //        Status = p.Status
+    //    }).ToList();
+    //}
 
 }
-
-
-
-
-
- 
-
-
-

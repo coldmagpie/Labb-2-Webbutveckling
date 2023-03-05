@@ -1,16 +1,22 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using DataAccess.DataAccess.DataContext;
+using DataAccess.DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using WebbLabb2.Shared;
 
 namespace WebbLabb2.Server.Services.AuthService
 {
     public class AuthService : IAuthService
     {
-        private readonly UserContext _userContext;
+        private readonly StoreContext _context;
         private readonly IConfiguration _configuration;
 
-        public AuthService(UserContext userContext, IConfiguration configuration)
+        public AuthService(StoreContext context, IConfiguration configuration)
         {
-            _userContext = userContext;
+            _context = context;
             _configuration = configuration;
         }
 
@@ -20,7 +26,7 @@ namespace WebbLabb2.Server.Services.AuthService
             {
                 return new ServiceResponse<int>()
                 {
-                    Success = false,
+                    Error = true,
                     Message = "User already exists"
                 };
             }
@@ -30,14 +36,14 @@ namespace WebbLabb2.Server.Services.AuthService
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _userContext.UserModels.AddAsync(user);
-            await _userContext.SaveChangesAsync();
+            await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
 
             return new ServiceResponse<int>()
             {
                 Data = user.Id,
-                Success = true,
-                Message = "Great Success!"
+                Error = false,
+                Message = "Register Successed!"
             };
         }
 
@@ -56,18 +62,18 @@ namespace WebbLabb2.Server.Services.AuthService
             {
                 return new ServiceResponse<string>()
                 {
-                    Success = false,
+                    Error = true,
                     Message = "Wrong user name or password"
                 };
             }
 
-            var user = await _userContext.UserModels.FirstAsync(u => u.Email == email);
+            var user = await _context.Users.FirstAsync(u => u.Email == email);
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
                 return new ServiceResponse<string>()
                 {
-                    Success = false,
+                    Error = true,
                     Message = "Wrong user name or password"
                 };
             }
@@ -75,8 +81,8 @@ namespace WebbLabb2.Server.Services.AuthService
             return new ServiceResponse<string>()
             {
                 Data = CreateToken(user),
-                Success = true,
-                Message = "TJOHOOOOOOOOOOOOOO!"
+                Error = false,
+                Message = $"Welcome, {user.FirstName}!"
             };
 
         }
@@ -85,8 +91,9 @@ namespace WebbLabb2.Server.Services.AuthService
         {
             var claims = new List<Claim>
         {
-            new (ClaimTypes.Name, user.Nickname),
             new (ClaimTypes.Email, user.Email),
+            new (ClaimTypes.MobilePhone, user.PhoneNumber),
+            new(ClaimTypes.Name, user.LastName),
             new (ClaimTypes.NameIdentifier, user.Id.ToString())
         };
 
@@ -116,7 +123,7 @@ namespace WebbLabb2.Server.Services.AuthService
 
         public async Task<bool> CheckUserExistsAsync(string email)
         {
-            return await _userContext.UserModels.AnyAsync(u => u.Email.Equals(email));
+            return await _context.Users.AnyAsync(u => u.Email.Equals(email));
         }
     }
 }

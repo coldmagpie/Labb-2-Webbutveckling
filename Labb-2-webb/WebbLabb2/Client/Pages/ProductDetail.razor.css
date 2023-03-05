@@ -1,0 +1,19 @@
+﻿body {
+    background-color: mistyrose;
+}
+
+
+.image {
+    max-height: 500px;
+    max-width: 400px;
+    margin-bottom: 5px;
+    padding: 0;
+}
+
+.content {
+    padding: 0;
+}
+.row1 {
+    margin: 0;
+    padding: 0;
+}

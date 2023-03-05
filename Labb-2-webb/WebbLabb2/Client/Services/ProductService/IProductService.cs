@@ -1,8 +1,17 @@
-﻿public interface IProductService<T>
-{
-    public Task GetProductByCategory(string category);
-    public Task<ServiceResponse<T>> GetProductByName(string name);
-    public Task<ServiceResponse<T>> GetProductByNumber(string number);
-    public Task GetProductBySearchText(string text);
-}
+﻿using WebbLabb2.Shared;
+using WebbLabb2.Shared.DTOs;
 
+namespace WebbLabb2.Client.Services.ProductService;
+
+public interface IProductService
+{
+    string Message { get; set; }
+    public List<ProductDto> Products { get; set; }
+    public Task GetProducts(string ? category = null);
+    public Task <ProductDto> GetProductById(int id);
+    public Task <ProductDto> GetProductByName(string name);
+    public Task <ProductDto> GetProductByNumber(string number);
+    public Task GetProductBySearchText (string text);
+
+    event Action ProductsChanged;
+}

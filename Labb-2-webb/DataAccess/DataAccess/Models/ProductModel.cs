@@ -1,26 +1,15 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿
+namespace DataAccess.DataAccess.Models;
 
 public class ProductModel
 {
-    [BsonId]
-    public ObjectId Id { get; set; }
-    [BsonElement]
+    public int Id { get; set; }
     public string Number { get; set; }
-    [BsonElement]
     public string Name { get; set; }
-    [BsonElement]
     public string ImageUrl { get; set; }
-    [BsonElement]
-    public string Description { get; set; }
-    [BsonElement]
+    public string? Description { get; set; }
     public bool IsWeightable { get; set; }
-    [BsonElement]
-    public decimal Price { get; set; }
-    [BsonElement]
-    public string CategoryId { get; set; }
-    [BsonElement]
+    public double Price { get; set; }
+    public int CategoryId { get; set; }
     public bool Status { get; set; }
 }
-
-
