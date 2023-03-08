@@ -6,6 +6,7 @@ using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebbLabb2.Shared;
+using WebbLabb2.Shared.DTOs;
 
 namespace WebbLabb2.Server.Services.AuthService
 {
@@ -87,13 +88,58 @@ namespace WebbLabb2.Server.Services.AuthService
 
         }
 
+        public async Task<ServiceResponse<bool>> UpdateProfile(int userId, UserProfileDto dto)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Error = true,
+                    Message = "User not found."
+                };
+            }
+
+            user.FirstName = dto.FirstName;
+            user.LastName = dto.LastName;
+            user.Email = dto.Email;
+            user.PhoneNumber = dto.PhoneNumber;
+            user.Adress = dto.Adress;
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<bool> { Data = true, Message = "Profile has been updated." };
+        }
+
+        public async Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Error = true,
+                    Message = "User not found."
+                };
+            }
+
+            CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            await _context.SaveChangesAsync();
+
+            return new ServiceResponse<bool> { Data = true, Message = "Password has been changed." };
+        }
+
+
         private string CreateToken(UserModel user)
         {
             var claims = new List<Claim>
         {
             new (ClaimTypes.Email, user.Email),
             new (ClaimTypes.MobilePhone, user.PhoneNumber),
-            new(ClaimTypes.Name, user.LastName),
+            new(ClaimTypes.Name, user.Id.ToString()),
             new (ClaimTypes.NameIdentifier, user.Id.ToString())
         };
 

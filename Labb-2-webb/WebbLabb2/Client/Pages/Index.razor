@@ -26,9 +26,10 @@
         if (searchText != null)
         {
            var products = productService.GetProductBySearchText(searchText);
-            if (products is null )
+            if (products is null)
             {
-                message = "Sorry, There is no product matchs your search";
+                throw new InvalidOperationException("The products doesn't exist");
+                
             }
         }
         else
@@ -36,7 +37,7 @@
             var products = productService.GetProducts(category);
             if (products is null)
             {
-                message = "Sorry, There is no product matchs your search";
+                throw new InvalidOperationException("The product doesn't exist");
             }
         }
     }

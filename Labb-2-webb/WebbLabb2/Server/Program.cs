@@ -7,6 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Server.Extensions;
 using WebbLabb2.Server.Services.AuthService;
 using WebbLabb2.Shared.DTOs;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,14 +21,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<ICategoryRepository<CategoryModel, CategoryDto>, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository<ProductModel, ProductDto>, ProductRepository>();
+builder.Services.AddScoped<IUserRepository<UserModel>, UserRepository>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<StoreContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("StoreDb");
     options.UseSqlServer(connectionString);
 });
-builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.Configure<IdentityOptions>(options =>
+    options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

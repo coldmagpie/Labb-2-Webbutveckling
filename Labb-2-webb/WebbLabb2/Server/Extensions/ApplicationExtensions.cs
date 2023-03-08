@@ -1,7 +1,14 @@
-﻿using DataAccess.DataAccess.Interfaces;
+﻿using System.Security.Claims;
+using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
-using WebbLabb2.Server.Services.AuthService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WebbLabb2.Shared.DTOs;
+using Microsoft.AspNetCore.Http;
+
+using IAuthService = WebbLabb2.Server.Services.AuthService.IAuthService;
+using WebbLabb2.Shared;
+using System.Net.Http;
 
 namespace WebbLabb2.Server.Extensions;
 public static class ApplicationExtensions
@@ -10,9 +17,16 @@ public static class ApplicationExtensions
     {
         app.MapPost("/user/register", RegisterUserHandlerAsync);
         app.MapPost("/user/login", LoginUserHandlerAsync);
+        app.MapPost("/user/update/{id}", UpdateHandlerAsync);
+        app.MapPost("/user/changepassword/{id}", ChangePasswordAsync);
+        app.MapGet("/userid/{id}", GetUserById);
+        app.MapGet("/useremail/{email}", GetUserByEmail);
+        app.MapGet("/allusers", GetAllUsers);
+        //app.MapGet("/user{userId}/order{orderId}/items", GetOrderItems);
 
         return app;
     }
+
     private static async Task<IResult> LoginUserHandlerAsync(IAuthService authService, UserLoginDto dto)
     {
         var response = await authService.LoginUserAsync(dto.Email, dto.Password);
@@ -21,7 +35,7 @@ public static class ApplicationExtensions
 
     private static async Task<IResult> RegisterUserHandlerAsync(IAuthService authService, UserRegisterDto dto)
     {
-        var model = new UserModel()
+        var model = new UserModel
         {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
@@ -33,7 +47,48 @@ public static class ApplicationExtensions
         return response.Error ? Results.BadRequest(response) : Results.Ok(response);
     }
 
+    
+    public static async Task<IResult> UpdateHandlerAsync(IAuthService authService, int id, UserProfileDto newProfile)
+    {
+        var response = await authService.UpdateProfile(id, newProfile);
 
+        if (response.Error)
+        {
+            return Results.BadRequest(response);
+        }
+        return Results.Ok(response);
+    }
+
+    public static async Task<IResult> ChangePasswordAsync(IAuthService authService,[FromBody] string password, int id)
+    {
+        var response = await authService.ChangePassword(id, password);
+        if (response.Error)
+        {
+            return Results.BadRequest(response);
+        }
+
+        return Results.Ok(response);
+    }
+    private static async Task<IResult> GetUserById(IUserRepository<UserModel> userRepository, int id)
+    {
+        var response = await userRepository.GetUserById(id);
+        return response.Error ? Results.BadRequest(response) : Results.Ok(response.Data);
+    }
+    private static async Task<IResult> GetUserByEmail(IUserRepository<UserModel> userRepository,string email)
+    {
+        var response = await userRepository.GetUserByEmail(email);
+        return response.Error ? Results.BadRequest(response) : Results.Ok(response.Data);
+    }
+    private static async Task<IResult> GetAllUsers(IUserRepository<UserModel> userRepository)
+    {
+        var response = await userRepository.GetAllUsers();
+        return response.Error ? Results.BadRequest(response) : Results.Ok(response.Data);
+    }
+    //private static async Task<IResult> GetOrderItems(IUserRepository<UserModel> userRepository, int userId, int orderId)
+    //{
+    //    var response = await userRepository.GetUserOrderItems(userId, orderId);
+    //    return response.Error ? Results.BadRequest(response) : Results.Ok(response.Data);
+    //}
     public static WebApplication MapProductEndpoints(this WebApplication app)
     {
         app.MapPost("/createproduct", CreateProductAsync);

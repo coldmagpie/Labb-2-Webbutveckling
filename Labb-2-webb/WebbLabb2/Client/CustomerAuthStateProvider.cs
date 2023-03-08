@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Json;
+using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 
@@ -8,18 +9,18 @@ namespace WebbLabb2.Client
 {
     public class CustomerAuthStateProvider : AuthenticationStateProvider
     {
-        private ISessionStorageService _sessionStorage;
+        private readonly ILocalStorageService _localStorageService;
         private readonly HttpClient _httpClient;
 
-        public CustomerAuthStateProvider(ISessionStorageService sessionStorage, HttpClient httpClient)
+        public CustomerAuthStateProvider(ILocalStorageService localStorage, HttpClient httpClient)
         {
-            _sessionStorage = sessionStorage;
+            _localStorageService = localStorage;
             _httpClient = httpClient;
         }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            var authToken = _sessionStorage.GetItem<string>("authToken");
+            string authToken =await _localStorageService.GetItemAsStringAsync("authToken");
 
             var identity = new ClaimsIdentity();
             _httpClient.DefaultRequestHeaders.Authorization = null;
@@ -34,7 +35,7 @@ namespace WebbLabb2.Client
                 }
                 catch
                 {
-                    _sessionStorage.RemoveItem("authToken");
+                    await _localStorageService.RemoveItemAsync("authToken");
                     identity = new ClaimsIdentity();
                 }
             }

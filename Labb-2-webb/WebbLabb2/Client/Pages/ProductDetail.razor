@@ -1,7 +1,8 @@
 ﻿@page "/product/{id:int}"
 @using WebbLabb2.Client.Services.ProductService
 @using WebbLabb2.Shared.DTOs
-@inject IProductService ProductService
+@inject IProductService productService
+@inject NavigationManager navigationManager
 
 @if (product == null)
 {
@@ -10,21 +11,33 @@
 else
 {
     <div class="container">
-        <div class="row mt-1 justify-content-center align-items-center">
-            <div class="col-10 m-0 p-0">
+        <div class="row row-cols-4 align-items-center d-inline-block">
+            <div class="col-4 col-sm-12 m-3">
                 @if (!string.IsNullOrEmpty(product.Image))
                 {
                     <img class="image" src="@product.Image" alt="@product.Name"/>
                 }
             </div>
-            <div class="col-10 m-0 p-0">
+            <div class="col-6 col-sm-12 m-3">
                 <h2 class="mb-1">@product.Name</h2>
                 <h5 class="text-muted">@product.Description</h5>
                 <h6 class="text-muted">@("Nr." + product.Number)</h6>
-                <button class="btn btn-primary mt-2" @*@onclick="AddToCart"*@>
-                    <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart
-                </button>
+                <h6 class="card-text fw-bolder">@product.Price /@(product.IsWeightable ? "kg" : "st")</h6>
+                @if (@product.Status is false)
+                {
+                    <h4 class="text-warning fw-bolder mt-2">Product is out of stock</h4>
+                }
+                else
+                {
+                    <button class="btn btn-primary mt-2" @*@onclick="AddToCart"*@>
+                        <i class="oi oi-cart"></i>&nbsp;&nbsp;&nbsp;Add to Cart
+                    </button>
+                }
             </div>
+            @*<div class="col-10 col-sm-12 m-3 d-flex">
+                <a href="updateproduct"><button class="btn btn-outline-warning m-2">Update product</button></a>
+                <button class="btn btn-outline-warning m-2" @onclick="(() => DeleteProduct(product.Id))">Delete product</button>
+            </div>*@
         </div>
         
     </div>
@@ -41,6 +54,22 @@ else
     protected override async Task OnParametersSetAsync()
     {
         message = "Loading product...";
-        product = await ProductService.GetProductById(Id);
+        product = await productService.GetProductById(Id);
     }
+
+    //public void DeleteProduct(int id)
+    //{
+    //    var result = productService.DeleteProductAsync(Id);
+    //    navigationManager.NavigateTo("/");
+    //}
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    productService.ProductsChanged += StateHasChanged;
+    //}
+
+    //public void Dispose()
+    //{
+    //    productService.ProductsChanged -= StateHasChanged;
+    //}
+
 }

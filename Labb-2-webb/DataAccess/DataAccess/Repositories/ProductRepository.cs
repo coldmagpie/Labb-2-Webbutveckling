@@ -92,21 +92,6 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             response.Message = $"Sorry, this product doesn't exist";
         }
         else
-            //{
-            //    response.Error = false;
-            //    response.Data = new ProductDto
-            //    {
-            //        Id = product.Id,
-            //        Number = product.Number,
-            //        Name = product.Name,
-            //        CategoryId = product.CategoryId,
-            //        Description = product.Description,
-            //        IsWeightable = product.IsWeightable,
-            //        Price = product.Price,
-            //        Image = product.ImageUrl,
-            //        Status = product.Status
-            //    };
-            //}
         {
             response.Error = false;
             response.Data = product;
@@ -124,21 +109,6 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             response.Message = $"Sorry, this product doesn't exist";
         }
         else
-            //{
-            //    response.Error = false;
-            //    response.Data = new ProductDto
-            //    {
-            //        Id = product.Id,
-            //        Number = product.Number,
-            //        Name = product.Name,
-            //        CategoryId = product.CategoryId,
-            //        Description = product.Description,
-            //        IsWeightable = product.IsWeightable,
-            //        Price = product.Price,
-            //        Image = product.ImageUrl,
-            //        Status = product.Status
-            //    };
-            //}{
         {
             response.Error = false;
             response.Data = product;
@@ -208,19 +178,6 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             product.Status = dto.Status;
             await _storeContext.SaveChangesAsync();
             response.Error = false;
-
-            //response.Data = new ProductDto
-            //{
-            //    Id = product.Id,
-            //    Number = product.Number,
-            //    Name = product.Name,
-            //    CategoryId = product.CategoryId,
-            //    Description = product.Description,
-            //    IsWeightable = product.IsWeightable,
-            //    Image = product.ImageUrl,
-            //    Price = product.Price,
-            //    Status = product.Status
-            //};
         }
 
         return response;
@@ -243,21 +200,4 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         }
         return response;
     }
-
-    //private List<ProductDto> ConvertToDto(List<ProductModel> products)
-    //{
-    //    return products.Select(p => new ProductDto
-    //    {
-    //        Id = p.Id,
-    //        Number = p.Number,
-    //        Name = p.Name,
-    //        CategoryId = p.CategoryId,
-    //        Description = p.Description,
-    //        IsWeightable = p.IsWeightable,
-    //        Price = p.Price,
-    //        Image = p.ImageUrl,
-    //        Status = p.Status
-    //    }).ToList();
-    //}
-
 }

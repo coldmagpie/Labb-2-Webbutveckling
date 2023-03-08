@@ -1,0 +1,16 @@
+﻿using WebbLabb2.Shared.DTOs;
+using WebbLabb2.Shared;
+
+namespace WebbLabb2.Client.Services.AuthService
+{
+    public interface IAuthService
+    {
+        event Action UserChanged;
+        Task<ServiceResponse<int>> Register(UserRegisterDto register);
+        Task <ServiceResponse<string>> Login(UserLoginDto login);
+        Task<ServiceResponse<bool>> UpdateProfile(int id, UserProfileDto newInfo);
+        Task<ServiceResponse<bool>> ChangePassword(int id, UserPasswordDto dto);
+        Task <UserProfileDto> GetUserById(int id);
+        Task<bool> IsUserAuthenticated();
+    }
+}

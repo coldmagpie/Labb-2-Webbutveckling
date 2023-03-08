@@ -1,0 +1,122 @@
+﻿@page "/users"
+@page "/searchuser/{searchText}"
+@using WebbLabb2.Client.Services.UserService
+@inject IUserService userService
+@implements IDisposable
+@inject HttpClient client
+@inject NavigationManager navigationManager
+
+<div class="input-group">
+    <input @bind-value="searchText"
+           @bind-value:event="oninput"
+           type="search"
+           list="users"
+           @onkeyup="HandleSearch"
+           class="form-control"
+           placeholder="Search..."
+           @ref="searchInput" />
+    <div class="input-group-append">
+        <button class="btn btn-dark text-white" @onclick="SearchUser">
+            <span class="oi oi-magnifying-glass"></span>
+        </button>
+    </div>
+</div>
+
+@if (userService.Users is null ||  userService.Users.Count <= 0)
+{
+    <div>@userService.Message</div>
+}
+else
+{
+    <div class="container">
+        <div class="row row-cols-8 m-lg-5 d-flex align-items-center">
+            @if (userService.User is null)
+            {
+                @foreach (var user in userService.Users)
+                {
+                    <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
+                        <div class="card-body">
+                            <h4 class="card-title mb-1">@("ID: " + user.Id)</h4>
+                            <h5 class="card-subtitle mb-1">@("First Name: " + user.FirstName)</h5>
+                            <h5 class="card-subtitle mb-1">@("Last Name: " + user.LastName)</h5>
+                            <h6 class="card-text">@("E-mail: " + user.Email)</h6>
+                            <h6 class="card-text">@("Telephone: " + user.PhoneNumber)</h6>
+                            <p class="card-text">@("Adress: " + user.Adress)</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-1">@("ID: " + userService.User.Id)</h4>
+                        <h5 class="card-subtitle mb-1">@("First Name: " + userService.User.FirstName)</h5>
+                        <h5 class="card-subtitle mb-1">@("Last Name: " + userService.User.LastName)</h5>
+                        <h6 class="card-text">@("E-mail: " + userService.User.Email)</h6>
+                        <h6 class="card-text">@("Telephone: " + userService.User.PhoneNumber)</h6>
+                        <p class="card-text">@("Adress: " + userService.User.Adress)</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+
+@code {
+
+    private string? message { get; set; }
+    [Parameter]
+    public string searchText { get; set; } = null;
+    protected ElementReference searchInput;
+    
+    protected override async Task OnParametersSetAsync()
+    {
+        if (searchText is not null)
+        {
+            var user = userService.GetUserByEmail(searchText);
+            if (user is null)
+            {
+                throw new InvalidOperationException("The user doesn't exist");
+            }
+        }
+        var users = userService.GetAllUsers();
+        if (users is null)
+        {
+            throw new InvalidOperationException("The users doesn't exist");
+        }
+        
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userService.UsersChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        userService.UsersChanged -= StateHasChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await searchInput.FocusAsync();
+        }
+    }
+
+    public void SearchUser()
+    {
+        navigationManager.NavigateTo($"searchuser/{searchText}");
+    }
+
+    public async Task HandleSearch(KeyboardEventArgs args)
+    {
+        if (args.Key == null || args.Key.Equals("Enter")) 
+        {
+            SearchUser();
+        }
+    }
+}

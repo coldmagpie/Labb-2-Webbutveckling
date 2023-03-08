@@ -12,8 +12,7 @@
 else
 {
        <div class="container">
-           <div class="row">
-               <div class="col-1"></div>
+        <div class="row row-cols-8 m-lg-5 d-flex align-items-center">
                @foreach (var product in productService.Products)
                {
                    <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
@@ -28,15 +27,12 @@ else
                        </div>
                    </div>
                }
-               <div class="col-1"></div>
            </div>
     </div>
 }
 
 
 @code {
-
-    private List<ProductDto> Products = null;
 
     protected override async Task OnInitializedAsync()
     {

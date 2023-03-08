@@ -7,11 +7,11 @@ namespace WebbLabb2.Client.Services.CategoryService
 {
     public class CategoryService : ICategoryService
     {
-        private readonly HttpClient _http;
+        private readonly HttpClient _httpClient;
 
-        public CategoryService(HttpClient http)
+        public CategoryService(HttpClient httpClient)
         {
-            _http = http;
+            _httpClient = httpClient;
         }
 
         public List<CategoryDto> Categories { get; set; } = new List<CategoryDto>();
@@ -20,7 +20,7 @@ namespace WebbLabb2.Client.Services.CategoryService
 
         public async Task<List<CategoryDto>> GetAllCategories()
         {
-            var result = await _http.GetFromJsonAsync<List<CategoryModel>>("categories");
+            var result = await _httpClient.GetFromJsonAsync<List<CategoryModel>>("categories");
 
             Categories = result.Select(p => new CategoryDto
             {

@@ -33,7 +33,8 @@ public class ProductService : IProductService
             Description = p.Description,
             Price = p.Price,
             Image = p.ImageUrl,
-            IsWeightable = p.IsWeightable
+            IsWeightable = p.IsWeightable,
+            Status = p.Status
         }).ToList();
         ProductsChanged?.Invoke();
     }
@@ -50,7 +51,8 @@ public class ProductService : IProductService
                 Description = p.Description,
                 Price = p.Price,
                 Image = p.ImageUrl,
-                IsWeightable = p.IsWeightable
+                IsWeightable = p.IsWeightable,
+                Status = p.Status
             }).ToList();
             ProductsChanged.Invoke();
             return Products;
@@ -67,7 +69,8 @@ public class ProductService : IProductService
             Description = result.Description,
             Price = result.Price,
             Image = result.ImageUrl,
-            IsWeightable = result.IsWeightable
+            IsWeightable = result.IsWeightable,
+            Status = result.Status
         };
         return product;
     }
@@ -87,7 +90,8 @@ public class ProductService : IProductService
             Description = result.Data.Description,
             Price = result.Data.Price,
             Image = result.Data.ImageUrl,
-            IsWeightable = result.Data.IsWeightable
+            IsWeightable = result.Data.IsWeightable,
+            Status = result.Data.Status
         };
 
         return product;
@@ -107,10 +111,21 @@ public class ProductService : IProductService
             Description = result.Data.Description,
             Price = result.Data.Price,
             Image = result.Data.ImageUrl,
-            IsWeightable = result.Data.IsWeightable
+            IsWeightable = result.Data.IsWeightable,
+            Status = result.Data.Status
         };
 
         return product;
+    }
+
+    public async Task DeleteProductAsync(int id)
+    {
+        var result = await _httpClient.DeleteFromJsonAsync<ServiceResponse<ProductModel>>($"/deleteproduct/{id}");
+        if (result.Error)
+        {
+            result.Message = "Product not found";
+        }
+        ProductsChanged.Invoke();
     }
 
     public async Task GetProductBySearchText(string text)
@@ -125,7 +140,8 @@ public class ProductService : IProductService
             Description = p.Description,
             Price = p.Price,
             Image = p.ImageUrl,
-            IsWeightable = p.IsWeightable
+            IsWeightable = p.IsWeightable,
+            Status = p.Status
         }).ToList();
         ProductsChanged?.Invoke();
     }
