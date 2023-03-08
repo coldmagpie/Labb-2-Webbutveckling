@@ -348,3 +348,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+/Labb-2-webb/WebbLabb2/Client/Shared/Management.razor

@@ -1,0 +1,15 @@
+﻿show-menu {
+    display: block;
+}
+
+.menu-button {
+    margin-left: 2em;
+}
+
+.top-row a {
+    margin-left: 10px;
+}
+
+.dropdown-item:hover {
+    background-color: lightskyblue;
+}

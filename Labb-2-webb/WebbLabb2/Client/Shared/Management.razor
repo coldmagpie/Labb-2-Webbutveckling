@@ -1,0 +1,29 @@
+﻿<div class="dropdown m-3">
+    <button class="btn btn-dark dropdown-toggle" type="button" @onclick="ToggleDropdown" @onfocusout="HideMenu">
+        <i class="oi oi-heart"></i>
+    </button>
+    <div class="@GetDropdownCssClass()">
+        <a class="dropdown-item" href="users">Check Users</a>
+        <a class="dropdown-item" href="allproducts">Check Products</a>
+    </div>
+</div>
+
+@code {
+    private bool showDropdown = false;
+
+    private string GetDropdownCssClass()
+    {
+        return showDropdown ? "dropdown-menu show" : "dropdown-menu";
+    }
+
+    private void ToggleDropdown()
+    {
+        showDropdown = !showDropdown;
+    }
+
+    private async Task HideMenu()
+    {
+        await Task.Delay(200);
+        showDropdown = false;
+    }
+}
