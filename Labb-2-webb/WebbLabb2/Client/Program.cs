@@ -7,6 +7,7 @@ using WebbLabb2.Client.Services.AuthService;
 using WebbLabb2.Client.Services.CategoryService;
 using WebbLabb2.Client.Services.ProductService;
 using Blazored.LocalStorage;
+using DataAccess.DataAccess.Interfaces;
 using WebbLabb2.Client.Services.UserService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

@@ -123,6 +123,8 @@ else
     }
     private async Task UpdateProfile()
     {
+        isSubmitted = true;
+        StateHasChanged();
         var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         var userId = authstate.User.Identity.Name;
         var result = await authService.UpdateProfile(int.Parse(userId), newProfile);

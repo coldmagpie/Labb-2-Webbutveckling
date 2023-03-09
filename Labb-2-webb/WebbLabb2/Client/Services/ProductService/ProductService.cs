@@ -19,6 +19,22 @@ public class ProductService : IProductService
         _httpClient = httpClient;
     }
 
+    public async Task<ProductModel> CreateProduct(ProductDto dto)
+    {
+        var result =await _httpClient.PostAsJsonAsync("/createproduct", dto);
+        var product = new ProductModel()
+        {
+            Name = dto.Name,
+            Number = dto.Number,
+            Description = dto.Description,
+            Price = dto.Price,
+            ImageUrl = dto.Image,
+            IsWeightable = dto.IsWeightable,
+            Status = dto.Status
+        };
+        return product;
+    }
+
     public async Task GetProducts(string ? category = null)
     {
         var result = category is null?
@@ -39,24 +55,24 @@ public class ProductService : IProductService
         ProductsChanged?.Invoke();
     }
 
-    public async Task<List<ProductDto>> GetProductByCategory(string? category)
-    {
-        var result = await _httpClient.GetFromJsonAsync<List<ProductModel>>($"/categoryproducts/{category}");
+    //public async Task<List<ProductDto>> GetProductByCategory(string? category)
+    //{
+    //    var result = await _httpClient.GetFromJsonAsync<List<ProductModel>>($"/categoryproducts/{category}");
        
-            Products = result.Select(p => new ProductDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Number = p.Number,
-                Description = p.Description,
-                Price = p.Price,
-                Image = p.ImageUrl,
-                IsWeightable = p.IsWeightable,
-                Status = p.Status
-            }).ToList();
-            ProductsChanged.Invoke();
-            return Products;
-    }
+    //        Products = result.Select(p => new ProductDto
+    //        {
+    //            Id = p.Id,
+    //            Name = p.Name,
+    //            Number = p.Number,
+    //            Description = p.Description,
+    //            Price = p.Price,
+    //            Image = p.ImageUrl,
+    //            IsWeightable = p.IsWeightable,
+    //            Status = p.Status
+    //        }).ToList();
+    //        ProductsChanged.Invoke();
+    //        return Products;
+    //}
 
     public async Task<ProductDto> GetProductById(int id)
     {
@@ -118,16 +134,6 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task DeleteProductAsync(int id)
-    {
-        var result = await _httpClient.DeleteFromJsonAsync<ServiceResponse<ProductModel>>($"/deleteproduct/{id}");
-        if (result.Error)
-        {
-            result.Message = "Product not found";
-        }
-        ProductsChanged.Invoke();
-    }
-
     public async Task GetProductBySearchText(string text)
     {
         var result = await _httpClient.GetFromJsonAsync<List<ProductModel>>($"/searchproduct/{text}");
@@ -145,4 +151,31 @@ public class ProductService : IProductService
         }).ToList();
         ProductsChanged?.Invoke();
     }
+
+    public async Task<ProductModel> UpdateProduct(int id, ProductDto dto)
+    {
+        var result = await _httpClient.PutAsJsonAsync($"/product/update/{id}", dto);
+        var product = new ProductModel()
+        {
+            Name = dto.Name,
+            Number = dto.Number,
+            Description = dto.Description,
+            Price = dto.Price,
+            ImageUrl = dto.Image,
+            IsWeightable = dto.IsWeightable,
+            Status = dto.Status
+        };
+        return product;
+    }
+
+    public async Task DeleteProductAsync(int id)
+    {
+        var result = await _httpClient.DeleteFromJsonAsync<ServiceResponse<ProductModel>>($"/deleteproduct/{id}");
+        if (result.Error)
+        {
+            result.Message = "Product not found";
+        }
+        ProductsChanged.Invoke();
+    }
+
 }

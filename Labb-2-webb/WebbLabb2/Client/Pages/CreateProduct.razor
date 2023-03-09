@@ -1,0 +1,72 @@
+﻿@page "/admin/createproduct"
+@using WebbLabb2.Client.Services.ProductService
+@using WebbLabb2.Shared.DTOs
+@using Microsoft.AspNetCore.Components
+@inject IProductService productService
+
+<h3 class="mb-5 row d-flex flex-column align-items-center fw-bolder">Create Product</h3>
+@if (!isSubmitted)
+{
+    <EditForm Model="newProduct" OnValidSubmit="CreateNewProduct">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <div class="mb-3">
+            <label for="image">ImageUrl</label>
+            <InputText id="image" @bind-Value="newProduct.Image" class="form-control" />
+            <ValidationMessage For="@(() => newProduct.Image)" />
+        </div>
+        <div class="mb-3">
+            <label for="name">Product Name</label>
+            <InputText id="name" @bind-Value="newProduct.Name" class="form-control" />
+            <ValidationMessage For="@(() => newProduct.Name)" />
+        </div>
+        <div class="mb-3">
+            <label for="number">Product Number</label>
+            <InputText id="number" @bind-Value="newProduct.Number" class="form-control" />
+            <ValidationMessage For="@(() => newProduct.Number)" />
+        </div>
+        <div class="mb-3">
+            <label for="description">Product Description</label>
+            <InputText id="description" @bind-Value="newProduct.Description" class="form-control" />
+            <ValidationMessage For="@(() => newProduct.Description)" />
+        </div>
+        <div class="mb-3">
+            <label for="isWeightable">Is Weightable?</label>
+            <InputCheckbox id="isWeightable" @bind-Value="newProduct.IsWeightable" class="form-check-input" />
+            <ValidationMessage For="@(() => newProduct.IsWeightable)" />
+        </div>
+        <div class="mb-3">
+            <label for="price">Price</label>
+            <InputNumber id="price" @bind-Value="newProduct.Price" class="form-control" />
+            <ValidationMessage For="@(() => newProduct.Price)" />
+        </div>
+        <div class="mb-3">
+            <label for="categoryId">Category (1-Fruit 2-Vegetable 3-Dairy)</label>
+            <InputNumber id="categoryId" @bind-Value="newProduct.CategoryId" class="form-control" />
+            <ValidationMessage For="@(() => newProduct.CategoryId)" />
+        </div>
+        <div class="mb-3">
+            <label for="inStock">In Stock? (t)</label>
+            <InputCheckbox id="inStock" @bind-Value="newProduct.Status" class="form-check-input" />
+            <ValidationMessage For="@(() => newProduct.Status)" />
+        </div>
+        <button type="submit" class="btn btn-primary mb-5">Confirm</button>
+    </EditForm>
+}
+else
+{
+    <p>Product has been created!</p>
+}
+
+@code {
+
+    private string message = string.Empty;
+    ProductDto newProduct = new ProductDto();
+    bool isSubmitted = false;
+
+    private async Task CreateNewProduct()
+    {
+        isSubmitted = true;
+        StateHasChanged();
+        var result = await productService.CreateProduct(newProduct);
+    }
+}

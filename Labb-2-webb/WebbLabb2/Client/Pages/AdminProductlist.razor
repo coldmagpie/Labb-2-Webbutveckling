@@ -1,0 +1,75 @@
+﻿@page "/admin/productlist"
+@using WebbLabb2.Client.Services.ProductService
+@inject IProductService productService
+@inject NavigationManager navigationManager
+@attribute [Authorize]
+
+<h3>Products</h3>
+
+@if (productService.Products == null)
+{
+    <span>Loading Products...</span>
+}
+else
+{
+    <button class="btn btn-primary float-end" @onclick="CreateProduct">
+        <i class="oi oi-plus"></i> Add new product
+    </button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>In Stock</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <Virtualize Items="productService.Products" Context="product">
+                <tr>
+                    <td><img src="@product.Image" class="image" /></td>
+                    <td>@product.Name</td>
+                    <td>@product.Price/@(product.IsWeightable ? "kg" : "st")</td>
+                    <td>@(product.Status ? "Yes" : "No")</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="(() => EditProduct(product.Id))">
+                            <i class="oi oi-pencil"></i>
+                        </button>
+                    </td>
+                        <td>
+                        <button class="btn btn-warning" @onclick="(() => DeleteProduct(product.Id))">
+                            <i class="oi oi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </Virtualize>
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await productService.GetProducts();
+    }
+
+    void EditProduct(int productId)
+    {
+        navigationManager.NavigateTo($"admin/updateproduct/{productId}");
+    }
+
+    void CreateProduct()
+    {
+        navigationManager.NavigateTo("admin/createproduct");
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        var result = productService.DeleteProductAsync(id);
+        await productService.GetProducts();
+        navigationManager.NavigateTo(navigationManager.Uri, true);
+    }
+}

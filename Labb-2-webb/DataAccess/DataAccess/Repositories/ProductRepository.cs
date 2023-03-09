@@ -163,8 +163,10 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Id == id);
         if (product is null)
         {
+
             response.Error = true;
             response.Message = $"Sorry, this product doesn't exist";
+
         }
         else
         {
@@ -177,7 +179,6 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             product.Price = dto.Price;
             product.Status = dto.Status;
             await _storeContext.SaveChangesAsync();
-            response.Error = false;
         }
 
         return response;

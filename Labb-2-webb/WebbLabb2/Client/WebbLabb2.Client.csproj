@@ -30,12 +30,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\Productlist.razor" />
+    <_ContentIncludedByDefault Remove="Pages\CreateProduct.razor" />
     <_ContentIncludedByDefault Remove="Pages\UserProfile.razor" />
   </ItemGroup>
 
   <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\Productlist.razor" />
+    <UpToDateCheckInput Remove="Pages\CreateProduct.razor" />
   </ItemGroup>
 
 </Project>

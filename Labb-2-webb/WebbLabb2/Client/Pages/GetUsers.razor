@@ -1,5 +1,5 @@
-﻿@page "/users"
-@page "/searchuser/{searchText}"
+﻿@page "/admin/users"
+@page "/admin/searchuser/{searchText}"
 @using WebbLabb2.Client.Services.UserService
 @inject IUserService userService
 @implements IDisposable
@@ -109,7 +109,7 @@ else
 
     public void SearchUser()
     {
-        navigationManager.NavigateTo($"searchuser/{searchText}");
+        navigationManager.NavigateTo($"admin/searchuser/{searchText}");
     }
 
     public async Task HandleSearch(KeyboardEventArgs args)
