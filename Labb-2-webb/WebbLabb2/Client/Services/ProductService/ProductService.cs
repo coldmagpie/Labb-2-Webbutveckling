@@ -30,7 +30,7 @@ public class ProductService : IProductService
             Price = dto.Price,
             ImageUrl = dto.Image,
             IsWeightable = dto.IsWeightable,
-            Status = dto.Status
+            InStock = dto.InStock
         };
         return product;
     }
@@ -50,29 +50,10 @@ public class ProductService : IProductService
             Price = p.Price,
             Image = p.ImageUrl,
             IsWeightable = p.IsWeightable,
-            Status = p.Status
+            InStock = p.InStock
         }).ToList();
         ProductsChanged?.Invoke();
     }
-
-    //public async Task<List<ProductDto>> GetProductByCategory(string? category)
-    //{
-    //    var result = await _httpClient.GetFromJsonAsync<List<ProductModel>>($"/categoryproducts/{category}");
-       
-    //        Products = result.Select(p => new ProductDto
-    //        {
-    //            Id = p.Id,
-    //            Name = p.Name,
-    //            Number = p.Number,
-    //            Description = p.Description,
-    //            Price = p.Price,
-    //            Image = p.ImageUrl,
-    //            IsWeightable = p.IsWeightable,
-    //            Status = p.Status
-    //        }).ToList();
-    //        ProductsChanged.Invoke();
-    //        return Products;
-    //}
 
     public async Task<ProductDto> GetProductById(int id)
     {
@@ -86,7 +67,7 @@ public class ProductService : IProductService
             Price = result.Price,
             Image = result.ImageUrl,
             IsWeightable = result.IsWeightable,
-            Status = result.Status
+            InStock = result.InStock
         };
         return product;
     }
@@ -107,7 +88,7 @@ public class ProductService : IProductService
             Price = result.Data.Price,
             Image = result.Data.ImageUrl,
             IsWeightable = result.Data.IsWeightable,
-            Status = result.Data.Status
+            InStock = result.Data.InStock
         };
 
         return product;
@@ -128,7 +109,7 @@ public class ProductService : IProductService
             Price = result.Data.Price,
             Image = result.Data.ImageUrl,
             IsWeightable = result.Data.IsWeightable,
-            Status = result.Data.Status
+            InStock = result.Data.InStock
         };
 
         return product;
@@ -147,7 +128,7 @@ public class ProductService : IProductService
             Price = p.Price,
             Image = p.ImageUrl,
             IsWeightable = p.IsWeightable,
-            Status = p.Status
+            InStock = p.InStock
         }).ToList();
         ProductsChanged?.Invoke();
     }
@@ -163,7 +144,7 @@ public class ProductService : IProductService
             Price = dto.Price,
             ImageUrl = dto.Image,
             IsWeightable = dto.IsWeightable,
-            Status = dto.Status
+            InStock = dto.InStock
         };
         return product;
     }

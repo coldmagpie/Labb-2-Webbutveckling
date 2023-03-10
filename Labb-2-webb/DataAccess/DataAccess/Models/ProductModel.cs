@@ -11,5 +11,5 @@ public class ProductModel
     public bool IsWeightable { get; set; }
     public double Price { get; set; }
     public int CategoryId { get; set; }
-    public bool Status { get; set; }
+    public bool InStock { get; set; }
 }

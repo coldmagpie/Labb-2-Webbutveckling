@@ -46,8 +46,8 @@
         </div>
         <div class="mb-3">
             <label for="inStock">In Stock? (t)</label>
-            <InputCheckbox id="inStock" @bind-Value="newProduct.Status" class="form-check-input" />
-            <ValidationMessage For="@(() => newProduct.Status)" />
+            <InputCheckbox id="inStock" @bind-Value="newProduct.InStock" class="form-check-input" />
+            <ValidationMessage For="@(() => newProduct.InStock)" />
         </div>
         <button type="submit" class="btn btn-primary mb-5">Confirm</button>
     </EditForm>

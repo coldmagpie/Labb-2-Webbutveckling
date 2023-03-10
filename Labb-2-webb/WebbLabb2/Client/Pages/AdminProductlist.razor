@@ -33,7 +33,7 @@ else
                     <td><img src="@product.Image" class="image" /></td>
                     <td>@product.Name</td>
                     <td>@product.Price/@(product.IsWeightable ? "kg" : "st")</td>
-                    <td>@(product.Status ? "Yes" : "No")</td>
+                    <td>@(product.InStock ? "Yes" : "No")</td>
                     <td>
                         <button class="btn btn-primary" @onclick="(() => EditProduct(product.Id))">
                             <i class="oi oi-pencil"></i>

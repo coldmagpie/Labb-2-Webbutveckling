@@ -22,7 +22,7 @@ else
                 <h4>Number: @product.Number</h4>
                 <h4>Description: @product.Description</h4>
                 <h4>Price: @product.Price / @(product.IsWeightable ? "kg" : "st")</h4>
-                <h4>In Stock: @(product.Status ? "Yes" : "No") </h4>
+                <h4>In Stock: @(product.InStock ? "Yes" : "No") </h4>
             </div>
         </div>
     </div>
@@ -54,7 +54,7 @@ else
             <ValidationMessage For="@(() => updateProduct.Description)" />
         </div>
         <div class="mb-3">
-            <label for="isWeightable">Is Weightable?</label>
+            <label for="isWeightable">Is Weightable? (Check if true)</label>
             <InputCheckbox id="isWeightable" @bind-Value="updateProduct.IsWeightable" class="form-check-input" />
             <ValidationMessage For="@(() => updateProduct.IsWeightable)" />
         </div>
@@ -69,9 +69,9 @@ else
             <ValidationMessage For="@(() => updateProduct.CategoryId)" />
         </div>
         <div class="mb-3">
-            <label for="inStock">In Stock? (t)</label>
-            <InputCheckbox id="inStock" @bind-Value="updateProduct.Status" class="form-check-input" />
-            <ValidationMessage For="@(() => updateProduct.Status)" />
+            <label for="inStock">In Stock? (Check if true)</label>
+            <InputCheckbox id="inStock" @bind-Value="updateProduct.InStock" class="form-check-input" />
+            <ValidationMessage For="@(() => updateProduct.InStock)" />
         </div>
         <button type="submit" class="btn btn-primary mb-5">Confirm</button>
     </EditForm>

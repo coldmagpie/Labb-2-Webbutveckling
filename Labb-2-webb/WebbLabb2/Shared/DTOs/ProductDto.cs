@@ -20,6 +20,6 @@ public class ProductDto
     [Required]
     public int CategoryId { get; set; }
     [Required]
-    public bool Status { get; set; } = false;
+    public bool InStock { get; set; } = false;
 
 }

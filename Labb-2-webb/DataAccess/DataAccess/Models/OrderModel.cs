@@ -10,7 +10,7 @@ namespace DataAccess.DataAccess.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public List<OrderDetailModel> OrderDetails { get; set; } = new List<OrderDetailModel>();
+        public List<OrderItemsModel> OrderItems { get; set; } = new List<OrderItemsModel>();
         public DateTime DateTime { get; set; }
     }
 }

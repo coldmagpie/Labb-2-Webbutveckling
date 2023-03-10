@@ -87,7 +87,7 @@ namespace WebbLabb2.Server.Services.AuthService
             };
 
         }
-
+        //public int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
         public async Task<ServiceResponse<bool>> UpdateProfile(int userId, UserProfileDto dto)
         {
             var user = await _context.Users.FindAsync(userId);

@@ -22,6 +22,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<ICategoryRepository<CategoryModel, CategoryDto>, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository<ProductModel, ProductDto>, ProductRepository>();
 builder.Services.AddScoped<IUserRepository<UserModel>, UserRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<StoreContext>(options =>
@@ -56,6 +57,7 @@ app.UseRouting();
 app.MapAuthEndpoints();
 app.MapProductEndpoints();
 app.MapCategoryEndpoints();
+app.MapCartEndpoints();
 
 app.MapRazorPages();
 app.MapControllers();

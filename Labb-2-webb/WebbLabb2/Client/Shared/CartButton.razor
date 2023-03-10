@@ -1,0 +1,28 @@
+﻿@using WebbLabb2.Client.Services.CartService
+@using WebbLabb2.Shared.DTOs
+@inject ISyncLocalStorageService LocalStorage
+@implements IDisposable
+@inject ICartService cartService
+
+<a href="cart" class="btn btn-dark">
+    <i class="oi oi-cart"></i>
+    <span class="badge">@GetItemsCount()</span>
+</a>
+
+@code {
+    private int GetItemsCount()
+    {
+        var cart = LocalStorage.GetItem<List<CartItemDto>>("cart");
+        return cart != null ? cart.Count : 0 ;
+    }
+
+    protected override void OnInitialized()
+    {
+        cartService.CartChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        cartService.CartChanged -= StateHasChanged;
+    }
+}

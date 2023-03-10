@@ -42,7 +42,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("DataAccess.DataAccess.Models.OrderDetailModel", b =>
+            modelBuilder.Entity("DataAccess.DataAccess.Models.OrderItemsModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -177,7 +177,7 @@ namespace DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DataAccess.DataAccess.Models.OrderDetailModel", b =>
+            modelBuilder.Entity("DataAccess.DataAccess.Models.OrderItemsModel", b =>
                 {
                     b.HasOne("DataAccess.DataAccess.Models.OrderModel", null)
                         .WithMany("OrderDetails")
