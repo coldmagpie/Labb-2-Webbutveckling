@@ -9,6 +9,7 @@ using WebbLabb2.Client.Services.ProductService;
 using Blazored.LocalStorage;
 using DataAccess.DataAccess.Interfaces;
 using WebbLabb2.Client.Services.CartService;
+using WebbLabb2.Client.Services.OrderService;
 using WebbLabb2.Client.Services.UserService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -21,6 +22,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomerAuthStateProvider>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();

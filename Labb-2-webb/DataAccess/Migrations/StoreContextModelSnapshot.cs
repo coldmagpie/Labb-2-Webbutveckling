@@ -66,7 +66,9 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("OrderModelId");
 
-                    b.ToTable("OrderDetails");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("DataAccess.DataAccess.Models.OrderModel", b =>
@@ -179,6 +181,14 @@ namespace DataAccess.Migrations
                     b.HasOne("DataAccess.DataAccess.Models.OrderModel", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderModelId");
+
+                    b.HasOne("DataAccess.DataAccess.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DataAccess.DataAccess.Models.OrderModel", b =>

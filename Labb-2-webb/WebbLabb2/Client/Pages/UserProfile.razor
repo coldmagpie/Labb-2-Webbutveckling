@@ -6,7 +6,7 @@
 @inject IAuthService authService
 @inject NavigationManager navigationManager
 @attribute [Authorize]
-@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject AuthenticationStateProvider getAuthenticationStateAsync
 
 <AuthorizeView>
     <h3 class="m-3">Hi! You're logged in with <i>@user.FirstName @user.LastName</i>.</h3>
@@ -106,7 +106,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
         var userId = authstate.User.Identity.Name;
 
         user = await authService.GetUserById(int.Parse(userId));
@@ -117,7 +117,7 @@ else
     {
         isSubmitted = true;
         StateHasChanged();
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
         var userId = authstate.User.Identity.Name;
         var result = await authService.ChangePassword(int.Parse(userId), password);
     }
@@ -125,7 +125,7 @@ else
     {
         isSubmitted = true;
         StateHasChanged();
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
         var userId = authstate.User.Identity.Name;
         var result = await authService.UpdateProfile(int.Parse(userId), newProfile);
 

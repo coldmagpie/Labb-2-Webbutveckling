@@ -10,21 +10,6 @@ namespace WebbLabb2.Client.Services.CartService
         public ILocalStorageService _localStorage;
         private readonly HttpClient _httpClient;
 
-        public async Task UpdateQuantity(CartProductDto product)
-        {
-            var cart = await _localStorage.GetItemAsync<List<CartItemDto>>("cart");
-            if (cart is null)
-            {
-                return;
-            }
-            var item = cart.FirstOrDefault(i => i.productId == product.ProductId);
-            if (item is null)
-            {
-                return;
-            }
-            item.Quantity = product.Quantity;
-            await _localStorage.SetItemAsync("cart", cart);
-        }
 
         public event Action? CartChanged;
         public CartService(ILocalStorageService localStorage, HttpClient httpClient)
@@ -66,6 +51,10 @@ namespace WebbLabb2.Client.Services.CartService
         public async Task<List<CartProductDto>> GetCartProducts()
         {
             var cartItems = await _localStorage.GetItemAsync<List<CartItemDto>>("cart");
+            if (cartItems == null)
+            {
+                return new List<CartProductDto>();
+            } 
             var response = await _httpClient.PostAsJsonAsync("/cartproducts", cartItems);
             var result = await response.Content.ReadFromJsonAsync<List<CartProductDto>>();
             return result;
@@ -89,6 +78,24 @@ namespace WebbLabb2.Client.Services.CartService
 
         }
 
-
+        public async Task UpdateQuantity(CartProductDto product)
+        {
+            var cart = await _localStorage.GetItemAsync<List<CartItemDto>>("cart");
+            if (cart is null)
+            {
+                return;
+            }
+            var item = cart.FirstOrDefault(i => i.productId == product.ProductId);
+            if (item is null)
+            {
+                return;
+            }
+            item.Quantity = product.Quantity;
+            await _localStorage.SetItemAsync("cart", cart);
+        }
+        public async Task ClearCart()
+        {
+            await _localStorage.RemoveItemAsync("cart");
+        }
     }
 }

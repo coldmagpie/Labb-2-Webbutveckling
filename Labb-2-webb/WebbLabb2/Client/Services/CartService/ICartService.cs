@@ -10,8 +10,8 @@ namespace WebbLabb2.Client.Services.CartService
 
         Task RemoveProduct(int productId);
         Task UpdateQuantity(CartProductDto product);
-        //Task StoreCartItems(bool emptyLocalCart);
-        //Task GetCartItemsCount();
+
+        Task ClearCart();
         event Action CartChanged;
     }
 }

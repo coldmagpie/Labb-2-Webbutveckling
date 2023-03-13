@@ -18,32 +18,14 @@ namespace WebbLabb2.Client.Services.UserService
         }
         public async Task GetAllUsers()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<UserModel>>("/allusers");
+            var result = await _httpClient.GetFromJsonAsync<List<UserProfileDto>>("/allusers");
 
-            Users = result.Select(p => new UserProfileDto()
-            {
-                Id = p.Id,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                Email = p.Email,
-                PhoneNumber = p.PhoneNumber,
-                Adress = p.Adress,
-            }).ToList();
+            Users = result.ToList();
             UsersChanged?.Invoke();
         }
         public async Task GetUserByEmail(string email)
         {
-            var result = await _httpClient.GetFromJsonAsync<UserModel>($"/useremail/{email}");
-
-            User = new UserProfileDto()
-            {
-                Id = result.Id,
-                FirstName = result.FirstName,
-                LastName = result.LastName,
-                Email = result.Email,
-                PhoneNumber = result.PhoneNumber,
-                Adress = result.Adress,
-            };
+            User = await _httpClient.GetFromJsonAsync<UserProfileDto>($"/useremail/{email}");
             UsersChanged?.Invoke();
         }
     }

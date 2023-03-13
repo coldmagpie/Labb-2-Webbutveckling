@@ -13,7 +13,7 @@ else
     <div class="container">
         <div class="row align-items-center">
             <div class="col-6 col-sm-12 m-3">
-                <img class="image" src="@product.Image" alt="@product.Name" />
+                <img class="image" src="@product.ImageUrl" alt="@product.Name" />
             </div>
         </div>
         <div class="row flex-column">
@@ -35,8 +35,8 @@ else
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <div class="mb-3">
             <label for="image">ImageUrl</label>
-            <InputText id="image" @bind-Value="updateProduct.Image" class="form-control" />
-            <ValidationMessage For="@(() => updateProduct.Image)" />
+            <InputText id="image" @bind-Value="updateProduct.ImageUrl" class="form-control" />
+            <ValidationMessage For="@(() => updateProduct.ImageUrl)" />
         </div>
         <div class="mb-3">
             <label for="name">Product Name</label>

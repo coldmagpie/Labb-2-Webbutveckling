@@ -1,0 +1,52 @@
+﻿@page "/orders"
+@using WebbLabb2.Client.Services.OrderService
+@using DataAccess.DataAccess.Models
+@using WebbLabb2.Client.Services.AuthService
+@using WebbLabb2.Shared.DTOs
+@inject IOrderService orderService
+@inject IAuthService authService
+@inject AuthenticationStateProvider getAuthenticationStateAsync
+
+<h3>Orders by @user.FirstName @user.LastName</h3>
+
+@if (orders == null)
+{
+    <span>Loading your orders...</span>
+}
+else if (orders.Count <= 0)
+{
+    <span>You have no orders, yet.</span>
+}
+else
+{
+    foreach (var order in orders)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Order</h5>
+                        <h6 class="card-subtitle">OrderId: @order.Id</h6>
+                        <p class="card-text mb-3">Submitted: @order.DateTime.ToString("yyyy-MM-dd hh:mm:ss")</p>
+                        <a href="order/@order.Id/detail" class="btn btn-primary">Check Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int userId { get; set; }
+    List<OrderDto> orders = null;
+    UserProfileDto user = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        userId = int.Parse(authstate.User.Identity.Name);
+        user = await authService.GetUserById(userId);
+        orders = await orderService.GetUserOrders(userId);
+    }
+}

@@ -28,7 +28,7 @@ public class ProductService : IProductService
             Number = dto.Number,
             Description = dto.Description,
             Price = dto.Price,
-            ImageUrl = dto.Image,
+            ImageUrl = dto.ImageUrl,
             IsWeightable = dto.IsWeightable,
             InStock = dto.InStock
         };
@@ -38,26 +38,16 @@ public class ProductService : IProductService
     public async Task GetProducts(string ? category = null)
     {
         var result = category is null?
-            await _httpClient.GetFromJsonAsync<List<ProductModel>>("/products"):
-            await _httpClient.GetFromJsonAsync<List<ProductModel>>($"/categoryproducts/{category}");
+            await _httpClient.GetFromJsonAsync<List<ProductDto>>("/products"):
+            await _httpClient.GetFromJsonAsync<List<ProductDto>>($"/categoryproducts/{category}");
 
-        Products = result.Select(p=>new ProductDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Number = p.Number,
-            Description = p.Description,
-            Price = p.Price,
-            Image = p.ImageUrl,
-            IsWeightable = p.IsWeightable,
-            InStock = p.InStock
-        }).ToList();
+        Products = result.ToList();
         ProductsChanged?.Invoke();
     }
 
     public async Task<ProductDto> GetProductById(int id)
     {
-        var result = await _httpClient.GetFromJsonAsync<ProductModel>($"/products/{id}");
+        var result = await _httpClient.GetFromJsonAsync<ProductDto>($"/products/{id}");
         var product = new ProductDto
         {
             Id = result.Id,
@@ -65,7 +55,7 @@ public class ProductService : IProductService
             Number = result.Number,
             Description = result.Description,
             Price = result.Price,
-            Image = result.ImageUrl,
+            ImageUrl = result.ImageUrl,
             IsWeightable = result.IsWeightable,
             InStock = result.InStock
         };
@@ -74,62 +64,29 @@ public class ProductService : IProductService
 
     public async Task <ProductDto> GetProductByName(string name)
     {
-        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductModel>>($"/productname/{name}");
+        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductDto>>($"/productname/{name}");
         if (result.Error)
         {
             result.Message = "Product not found";
         }
-        var product = new ProductDto
-        {
-            Id = result.Data.Id,
-            Name = result.Data.Name,
-            Number = result.Data.Number,
-            Description = result.Data.Description,
-            Price = result.Data.Price,
-            Image = result.Data.ImageUrl,
-            IsWeightable = result.Data.IsWeightable,
-            InStock = result.Data.InStock
-        };
-
-        return product;
+        return result.Data;
     }
     public async Task <ProductDto> GetProductByNumber(string number)
     {
-        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductModel>>($"/productnumber/{number}");
+        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductDto>>($"/productnumber/{number}");
         if (result.Error)
         {
             result.Message = "Product not found";
         }
-        var product = new ProductDto
-        {
-            Id = result.Data.Id,
-            Name = result.Data.Name,
-            Number = result.Data.Number,
-            Description = result.Data.Description,
-            Price = result.Data.Price,
-            Image = result.Data.ImageUrl,
-            IsWeightable = result.Data.IsWeightable,
-            InStock = result.Data.InStock
-        };
 
-        return product;
+        return result.Data;
     }
 
     public async Task GetProductBySearchText(string text)
     {
-        var result = await _httpClient.GetFromJsonAsync<List<ProductModel>>($"/searchproduct/{text}");
+        var result = await _httpClient.GetFromJsonAsync<List<ProductDto>>($"/searchproduct/{text}");
       
-        Products = result.Select(p => new ProductDto
-        {
-            Id = p.Id,
-            Name = p.Name,
-            Number = p.Number,
-            Description = p.Description,
-            Price = p.Price,
-            Image = p.ImageUrl,
-            IsWeightable = p.IsWeightable,
-            InStock = p.InStock
-        }).ToList();
+        Products = result.ToList();
         ProductsChanged?.Invoke();
     }
 
@@ -142,7 +99,7 @@ public class ProductService : IProductService
             Number = dto.Number,
             Description = dto.Description,
             Price = dto.Price,
-            ImageUrl = dto.Image,
+            ImageUrl = dto.ImageUrl,
             IsWeightable = dto.IsWeightable,
             InStock = dto.InStock
         };

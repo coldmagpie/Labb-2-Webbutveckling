@@ -33,7 +33,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             CategoryId = dto.CategoryId,
             Description = dto.Description,
             IsWeightable = dto.IsWeightable,
-            ImageUrl = dto.Image,
+            ImageUrl = dto.ImageUrl,
             Price = dto.Price,
             InStock = dto.InStock
         };
@@ -175,7 +175,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             product.CategoryId = dto.CategoryId;
             product.Description = dto.Description;
             product.IsWeightable = dto.IsWeightable;
-            product.ImageUrl = dto.Image;
+            product.ImageUrl = dto.ImageUrl;
             product.Price = dto.Price;
             product.InStock = dto.InStock;
             await _storeContext.SaveChangesAsync();

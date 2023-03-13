@@ -20,13 +20,15 @@ namespace WebbLabb2.Client.Services.CategoryService
 
         public async Task<List<CategoryDto>> GetAllCategories()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<CategoryModel>>("categories");
+            var result = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("categories");
 
-            Categories = result.Select(p => new CategoryDto
-            {
-                Id = p.Id,
-                Name = p.Name
-            }).ToList();
+            Categories = result
+                //.Select(p => new CategoryDto
+            //{
+            //    Id = p.Id,
+            //    Name = p.Name
+            //})
+            .ToList();
             OnChange?.Invoke();
             return Categories;
         }

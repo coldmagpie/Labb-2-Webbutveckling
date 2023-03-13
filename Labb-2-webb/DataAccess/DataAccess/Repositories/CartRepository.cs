@@ -5,20 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Interfaces;
+using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
 namespace DataAccess.DataAccess.Repositories
-{ 
-    public class CartRepository:ICartRepository
+{
+    public class CartRepository : ICartRepository
     {
         public event Action? CartChanged;
         private readonly StoreContext _storeContext;
 
         public CartRepository(StoreContext storeContext)
         {
-            _storeContext = storeContext;   
+            _storeContext = storeContext;
         }
 
         public async Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(List<CartItemDto> cartItems)
@@ -27,7 +28,6 @@ namespace DataAccess.DataAccess.Repositories
             {
                 Data = new List<CartProductDto>()
             };
-
 
             foreach (var item in cartItems)
             {
@@ -56,13 +56,5 @@ namespace DataAccess.DataAccess.Repositories
 
             return cartProducts;
         }
-
-        //public Task<ServiceResponse<bool>> RemoveItemFromCart(int productId, int productTypeId)
-        //{
-            
-        //}
-
-
-       
     }
 }

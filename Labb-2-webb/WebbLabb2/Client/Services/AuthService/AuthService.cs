@@ -1,8 +1,5 @@
 ﻿using System.Net.Http.Json;
-using System.Security.Claims;
-using DataAccess.DataAccess.Models;
 using Microsoft.AspNetCore.Components.Authorization;
-using WebbLabb2.Client.Services.ProductService;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
@@ -46,16 +43,8 @@ namespace WebbLabb2.Client.Services.AuthService
 
         public async Task <UserProfileDto> GetUserById(int id)
         {
-            var result = await _httpClient.GetFromJsonAsync<UserModel>($"userid/{id}");
-            var user = new UserProfileDto()
-            {
-                FirstName = result.FirstName,
-                LastName = result.LastName,
-                Email = result.Email,
-                PhoneNumber = result.PhoneNumber,
-                Adress = result.Adress
-            };
-            return user;
+            var result = await _httpClient.GetFromJsonAsync<UserProfileDto>($"userid/{id}");
+            return result;
         }
         public async Task<bool> IsUserAuthenticated()
         {

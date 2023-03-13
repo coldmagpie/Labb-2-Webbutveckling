@@ -65,36 +65,5 @@ namespace DataAccess.DataAccess.Repositories
             }
             return response;
         }
-
-        //public async Task<ServiceResponse<List<ProductModel>>> GetUserOrderItems(int userId, int orderId)
-        //{
-        //    var response = new ServiceResponse<List<ProductModel>>();
-            
-        //    var user = await _storeContext.Users.Include(u=>u.Orders).ThenInclude(o => o.OrderDetails).FirstOrDefaultAsync(u=> u.Id == userId);
-        //    if (user is null)
-        //    {
-        //        response.Error = true;
-        //        response.Message = "No user found";
-        //    }
-        //    var order = user.Orders.FirstOrDefault(o=>o.Id == orderId);
-        //    if (order is null)
-        //    {
-        //        response.Error = true;
-        //        response.Message = "No order found";
-        //    }
-        //    var orderItems = order.OrderDetails.ToList();
-        //    if (orderItems is null)
-        //    {
-        //        response.Error = true;
-        //        response.Message = "No item found";
-        //    }
-        //    else
-        //    {
-        //        response.Error = false;
-        //        response.Data = orderItems;
-        //    }
-
-        //    return response;
-        //}
     }
 }

@@ -1,0 +1,57 @@
+﻿@page "/order/{orderId:int}/detail"
+@using WebbLabb2.Client.Services.OrderService
+@using DataAccess.DataAccess.Models
+@using WebbLabb2.Shared.DTOs
+@inject IOrderService orderService
+@inject AuthenticationStateProvider getAuthenticationStateAsync
+
+@if (Order == null)
+{
+    <span>Loading order...</span>
+}
+else
+{
+    <h3>Order from @Order.DateTime.ToString("yyyy-MM-dd hh:mm:ss")</h3>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th >Product</th>
+            <th  >Price</th>
+            <th >Quantity</th>
+            <th >Total Price</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in OrderItems)
+        {
+            <tr>
+                <td><img src="@item.Product.ImageUrl" class="image"/></td>
+                <td>@item.Product.Name</td>
+                <td >@item.Product.Price/@(item.Product.IsWeightable ? "kg" : "st")</td>
+                <td>@item.Quantity</td>
+                <td>@(item.Product.Price * item.Quantity) kr</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot class="row d-flex justify-content-end align-items-end m-0 p-0">@Math.Round(OrderItems.Sum(item => @item.Product.Price * @item.Quantity),2) kr</tfoot>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public int OrderId { get; set; }
+
+    OrderDto Order = null;
+    IList<OrderItemsDto> OrderItems = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var userId = authstate.User.Identity.Name;
+        Order = await orderService.GetOrderById(int.Parse(userId), OrderId);
+        OrderItems = await orderService.GetOrderItems(int.Parse(userId), OrderId);
+    }
+}

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20230308192048_AddOrderDetails")]
-    partial class AddOrderDetails
+    [Migration("20230311161036_AddOrderItems")]
+    partial class AddOrderItems
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,9 @@ namespace DataAccess.Migrations
 
                     b.HasIndex("OrderModelId");
 
-                    b.ToTable("OrderDetails");
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("DataAccess.DataAccess.Models.OrderModel", b =>
@@ -114,6 +116,9 @@ namespace DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("InStock")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsWeightable")
                         .HasColumnType("bit");
 
@@ -127,9 +132,6 @@ namespace DataAccess.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -180,8 +182,16 @@ namespace DataAccess.Migrations
             modelBuilder.Entity("DataAccess.DataAccess.Models.OrderItemsModel", b =>
                 {
                     b.HasOne("DataAccess.DataAccess.Models.OrderModel", null)
-                        .WithMany("OrderDetails")
+                        .WithMany("OrderItems")
                         .HasForeignKey("OrderModelId");
+
+                    b.HasOne("DataAccess.DataAccess.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DataAccess.DataAccess.Models.OrderModel", b =>
@@ -193,7 +203,7 @@ namespace DataAccess.Migrations
 
             modelBuilder.Entity("DataAccess.DataAccess.Models.OrderModel", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("DataAccess.DataAccess.Models.UserModel", b =>

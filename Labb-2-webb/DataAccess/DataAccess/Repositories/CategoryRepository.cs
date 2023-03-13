@@ -100,16 +100,4 @@ public class CategoryRepository:ICategoryRepository<CategoryModel, CategoryDto>
         var category = await _storeContext.Categories.FirstOrDefaultAsync(c => c.Name.Equals(name));
         return category;
     }
-
-    //private readonly IMongoCollection<CategoryModel> _categoryCollection;
-    //public CategoryRepository()
-    //{
-    //    var databaseName = "Store";
-    //    var connectionString = $"mongodb://localhost:27017";
-
-    //    var client = new MongoClient(connectionString);
-    //    var database = client.GetDatabase(databaseName);
-    //    _categoryCollection = database.GetCollection<CategoryModel>
-    //        ("categories", new() { AssignIdOnInsert = true });
-    //}
 }

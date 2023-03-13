@@ -1,9 +1,14 @@
 ﻿@page "/cart"
 @using WebbLabb2.Client.Services.CartService
 @using WebbLabb2.Client.Services.AuthService
+@using WebbLabb2.Client.Services.OrderService
 @using WebbLabb2.Shared.DTOs
 @inject ICartService cartService
 @inject IAuthService authService
+@inject IOrderService orderService
+@inject NavigationManager navigationManager
+@inject AuthenticationStateProvider getAuthenticationStateAsync
+@implements IDisposable
 
 <PageTitle>Cart</PageTitle>
 
@@ -15,61 +20,84 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-        <tr>
-            <th></th>
-            <th >Product</th>
-            <th  >Price</th>
-            <th >Quantity</th>
-            <th >Total Price</th>
-            <th>Delete</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var product in cartProducts)
-        {
+    @if (!isSubmitted)
+    {
+        <table class="table">
+            <thead>
             <tr>
-                <td><img src="@product.Image" class="image"/></td>
-                <td>@product.Name</td>
-                <td >@product.Price /@(product.IsWeightable ? "kg" : "st")</td>
-                <div class="m-0 p-0">
-                    <td>
-                        <button class="btn btn-white text-black" @onclick="(() => UpdateQuantity(product, -1))">
-                            <i class="oi oi-minus"></i>
-                        </button>
-                    </td>
-                    <td>@product.Quantity</td>
-                    <td>
-                        <button class="btn btn-white text-black" @onclick="(() => UpdateQuantity(product, +1))">
-                            <i class="oi oi-plus"></i>
-                        </button>
-                    </td>
-                </div>
-                <td>-:@(product.Price * product.Quantity)</td>
-                <td><button class="btn btn-warning" @onclick="(() => RemoveProduct(product.ProductId))">
-                    <i class="oi oi-trash"></i>
-                </button></td>
+                <th></th>
+                <th >Product</th>
+                <th  >Price</th>
+                <th >Quantity</th>
+                <th >Total Price</th>
+                <th>Delete</th>
+                <th></th>
             </tr>
-        }
-        </tbody>
-        <tfoot class="row d-flex justify-content-end align-items-end m-0 p-0">@Math.Round(cartProducts.Sum(product => @product.Price * @product.Quantity),2)</tfoot>
-    </table>
-    <button @*@onclick="PlaceOrder"*@ class="btn alert-success float-end mt-1">Checkout</button>
+            </thead>
+            <tbody>
+            @foreach (var product in cartProducts)
+            {
+                <tr>
+                    <td><img src="@product.Image" class="image"/></td>
+                    <td>@product.Name</td>
+                    <td >@product.Price /@(product.IsWeightable ? "kg" : "st")</td>
+                    <div class="m-0 p-0">
+                        <td>
+                            <button class="btn btn-white text-black" @onclick="(() => UpdateQuantity(product, -1))">
+                                <i class="oi oi-minus"></i>
+                            </button>
+                        </td>
+                        <td>@product.Quantity</td>
+                        <td>
+                            <button class="btn btn-white text-black" @onclick="(() => UpdateQuantity(product, +1))">
+                                <i class="oi oi-plus"></i>
+                            </button>
+                        </td>
+                    </div>
+                    <td>@(product.Price * product.Quantity)</td>
+                    <td><button class="btn btn-warning" @onclick="(() => RemoveProduct(product.ProductId))">
+                        <i class="oi oi-trash"></i>
+                    </button></td>
+                </tr>
+            }
+            </tbody>
+            <tfoot class="row d-flex justify-content-end align-items-end m-0 p-0">@Math.Round(cartProducts.Sum(product => @product.Price * @product.Quantity),2)</tfoot>
+        </table>
+        <AuthorizeView>
+            <Authorized>
+                <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Apply Order</button>
+            </Authorized>
+            
+            <NotAuthorized>
+                <h5>Please <a href="login">login</a> or <a href="register">register</a> for a new account to apply order</h5>
+            </NotAuthorized>
+        </AuthorizeView>
+    }
+    else
+    {
+        <p>Order has been applied!</p>
+    }
+   
 }
 
 
 
 @code {
     List<CartProductDto> cartProducts = null;
-    string message = "Loading cart...";
+    string message = "It's empty.....";
     bool isAuthenticated = false;
+    bool isSubmitted = false;
 
     protected override async Task OnInitializedAsync()
     {
         isAuthenticated = await authService.IsUserAuthenticated();
         await LoadCart();
+        cartService.CartChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        cartService.CartChanged -= StateHasChanged;
     }
 
     private async Task RemoveProduct(int productId)
@@ -83,7 +111,7 @@ else
         await cartService.GetCartItems();
         if ((await cartService.GetCartItems()).Count == 0)
         {
-            message = "you have no product in the cart!";
+            message = "you have no product in the cart now!";
             cartProducts = new List<CartProductDto>();
         }
         cartProducts = await cartService.GetCartProducts();
@@ -92,14 +120,23 @@ else
     private async Task UpdateQuantity(CartProductDto dto, int number)
     {
         dto.Quantity += number;
+        if (dto.Quantity < 0 )
+        {
+            dto.Quantity = 0;
+        }
         await cartService.UpdateQuantity(dto);
         await LoadCart();
     }
 
-    //private async Task PlaceOrder()
-    //{
-    //    string url = await OrderService.PlaceOrder();
-    //    NavigationManager.NavigateTo(url);
-    //}
+    private async Task PlaceOrder()
+    {
+        isSubmitted = true;
+        StateHasChanged();
+        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var userId = authstate.User.Identity.Name;
+        var result = await orderService.PlaceOrder(int.Parse(userId), cartProducts);
+        await cartService.ClearCart();
+        cartService.CartChanged += StateHasChanged;
+    }
 
 }

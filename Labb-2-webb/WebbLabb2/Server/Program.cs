@@ -15,7 +15,6 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -23,6 +22,7 @@ builder.Services.AddScoped<ICategoryRepository<CategoryModel, CategoryDto>, Cate
 builder.Services.AddScoped<IProductRepository<ProductModel, ProductDto>, ProductRepository>();
 builder.Services.AddScoped<IUserRepository<UserModel>, UserRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<StoreContext>(options =>
@@ -58,6 +58,7 @@ app.MapAuthEndpoints();
 app.MapProductEndpoints();
 app.MapCategoryEndpoints();
 app.MapCartEndpoints();
+app.MapOrderEndpoints();
 
 app.MapRazorPages();
 app.MapControllers();
