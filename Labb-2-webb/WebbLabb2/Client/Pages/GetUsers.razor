@@ -5,6 +5,7 @@
 @implements IDisposable
 @inject HttpClient client
 @inject NavigationManager navigationManager
+@attribute [Authorize (Roles = "Admin")]
 
 <div class="input-group">
     <input @bind-value="searchText"
@@ -56,7 +57,7 @@ else
                         <h6 class="card-text">@("E-mail: " + userService.User.Email)</h6>
                         <h6 class="card-text">@("Telephone: " + userService.User.PhoneNumber)</h6>
                         <p class="card-text">@("Adress: " + userService.User.Adress)</p>
-                        <a href="orders/@userService.User.Id" class="btn btn-primary">Check Orders</a>
+                        <a href="admin/userorders/@userService.User.Id" class="btn btn-primary">Check Orders</a>
                     </div>
                 </div>
             }

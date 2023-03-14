@@ -1,0 +1,77 @@
+﻿@page "/admin/userorders/{id:int}"
+@using WebbLabb2.Shared.DTOs
+@using WebbLabb2.Client.Services.AuthService
+@using WebbLabb2.Client.Services.OrderService
+@inject IAuthService authService
+@inject IOrderService orderService
+
+
+<h3>Orders by @user.FirstName @user.LastName</h3>
+
+@if (orders == null)
+{
+    <span>Loading orders...</span>
+}
+else if (orders.Count <= 0)
+{
+    <span>She / He has no order yet.</span>
+}
+else
+{
+    foreach (var order in orders)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Order</h5>
+                        <h6 class="card-subtitle">OrderId: @order.Id</h6>
+                        <p class="card-text mb-3">Submitted: @order.DateTime.ToString("yyyy-MM-dd hh:mm:ss")</p>
+                        <p>Order Details</p>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th >Product</th>
+                                <th  >Price</th>
+                                <th >Quantity</th>
+                                <th >Total Price</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <tr>
+                                    <td><img src="@item.Product.ImageUrl" class="image h-25 w-25"/></td>
+                                    <td>@item.Product.Name</td>
+                                    <td >@item.Product.Price/@(item.Product.IsWeightable ? "kg" : "st")</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@(item.Product.Price * item.Quantity) kr</td>
+                                </tr>
+                            }
+                            </tbody>
+                            <tfoot class="row d-flex justify-content-end align-items-end m-0 p-0">Total Price: @Math.Round(order.OrderItems.Sum(item => @item.Product.Price * @item.Quantity),2) kr</tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    List<OrderDto> orders = new List<OrderDto>();
+
+    UserProfileDto user = new UserProfileDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await authService.GetUserById(Id);
+        orders = await orderService.GetUserOrders(Id);
+    }
+}

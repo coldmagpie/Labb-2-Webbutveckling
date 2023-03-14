@@ -1,12 +1,18 @@
-﻿<div class="dropdown m-3">
-    <button class="btn btn-dark dropdown-toggle" type="button" @onclick="ToggleDropdown" @onfocusout="HideMenu">
-        <i class="oi oi-heart"></i>
-    </button>
-    <div class="@GetDropdownCssClass()">
-        <a class="dropdown-item" href="admin/users">Check Users</a>
-        <a class="dropdown-item" href="admin/productlist">Check Products</a>
+﻿@attribute [Authorize(Roles = "Admin")]
+
+<AuthorizeView>
+    <Authorized>
+    <div class="dropdown m-3">
+        <button class="btn btn-dark dropdown-toggle" type="button" @onclick="ToggleDropdown" @onfocusout="HideMenu">
+            <i class="oi oi-heart"></i>
+        </button>
+        <div class="@GetDropdownCssClass()">
+            <a class="dropdown-item" href="admin/users">Check Users</a>
+            <a class="dropdown-item" href="admin/productlist">Check Products</a>
+        </div>
     </div>
-</div>
+    </Authorized>
+</AuthorizeView>
 
 @code {
     private bool showDropdown = false;

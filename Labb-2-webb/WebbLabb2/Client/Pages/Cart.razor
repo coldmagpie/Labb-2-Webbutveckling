@@ -61,7 +61,7 @@ else
                 </tr>
             }
             </tbody>
-            <tfoot class="row d-flex justify-content-end align-items-end m-0 p-0">@Math.Round(cartProducts.Sum(product => @product.Price * @product.Quantity),2)</tfoot>
+            <tfoot class="row d-flex justify-content-end align-items-end m-0 p-0">Total Price: @Math.Round(cartProducts.Sum(product => @product.Price * @product.Quantity),2)</tfoot>
         </table>
         <AuthorizeView>
             <Authorized>

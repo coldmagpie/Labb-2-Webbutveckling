@@ -17,6 +17,7 @@ public static class UserExtension
     {
         app.MapPost("/user/register", RegisterUserHandlerAsync);
         app.MapPost("/user/login", LoginUserHandlerAsync);
+
         app.MapPost("/user/update/{id}", UpdateHandlerAsync);
         app.MapPost("/user/changepassword/{id}", ChangePasswordAsync);
         app.MapGet("/userid/{id}", GetUserById);
@@ -47,9 +48,9 @@ public static class UserExtension
     }
 
     
-    public static async Task<IResult> UpdateHandlerAsync(IAuthService authService, int id, UserProfileDto newProfile)
+    public static async Task<IResult> UpdateHandlerAsync(IAuthService authService, int userId, UserProfileDto newProfile)
     {
-        var response = await authService.UpdateProfile(id, newProfile);
+        var response = await authService.UpdateProfile(userId, newProfile);
 
         if (response.Error)
         {

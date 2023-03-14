@@ -2,7 +2,7 @@
 @using WebbLabb2.Client.Services.ProductService
 @using WebbLabb2.Shared.DTOs
 @inject IProductService productService
-@attribute [Authorize]
+@attribute [Authorize (Roles = "Admin")]
 
 @if (product == null)
 {

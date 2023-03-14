@@ -11,4 +11,5 @@ public class UserModel
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     public List<OrderModel>? Orders { get; set; }
+    public string Role { get; set; } = "Customer";
 }

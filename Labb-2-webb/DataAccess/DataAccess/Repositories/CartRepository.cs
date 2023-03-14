@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataAccess.DataAccess.DataContext;
+﻿using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Interfaces;
-using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;

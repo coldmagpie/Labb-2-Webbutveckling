@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,9 +32,9 @@ builder.Services.AddDbContext<StoreContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.Configure<IdentityOptions>(options =>
-    options.ClaimsIdentity.UserIdClaimType = ClaimTypes.NameIdentifier);
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -11,6 +11,7 @@ namespace WebbLabb2.Client.Services.AuthService
         private readonly AuthenticationStateProvider _authenticationStateProvider;
         public event Action UserChanged;
         
+        
         public AuthService(HttpClient httpClient, AuthenticationStateProvider authenticationStateProvider)
         {
             _httpClient = httpClient;
@@ -29,9 +30,9 @@ namespace WebbLabb2.Client.Services.AuthService
         }
 
 
-        public async Task<ServiceResponse<bool>> UpdateProfile( int id, UserProfileDto newProfile)
+        public async Task<ServiceResponse<bool>> UpdateProfile(int userId, UserProfileDto newProfile)
         {
-            var result = await _httpClient.PostAsJsonAsync($"user/update/{id}", newProfile);
+            var result = await _httpClient.PostAsJsonAsync($"user/update/{userId}", newProfile);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 

@@ -3,6 +3,7 @@
 @using WebbLabb2.Shared.DTOs
 @using Microsoft.AspNetCore.Components
 @inject IProductService productService
+@attribute [Authorize (Roles = "Admin")]
 
 <h3 class="mb-5 row d-flex flex-column align-items-center fw-bolder">Create Product</h3>
 @if (!isSubmitted)
@@ -30,7 +31,7 @@
             <ValidationMessage For="@(() => newProduct.Description)" />
         </div>
         <div class="mb-3">
-            <label for="isWeightable">Is Weightable?</label>
+            <label for="isWeightable">Is Weightable? (Check if true)</label>
             <InputCheckbox id="isWeightable" @bind-Value="newProduct.IsWeightable" class="form-check-input" />
             <ValidationMessage For="@(() => newProduct.IsWeightable)" />
         </div>
@@ -45,7 +46,7 @@
             <ValidationMessage For="@(() => newProduct.CategoryId)" />
         </div>
         <div class="mb-3">
-            <label for="inStock">In Stock? (t)</label>
+            <label for="inStock">In Stock? (Check if true)</label>
             <InputCheckbox id="inStock" @bind-Value="newProduct.InStock" class="form-check-input" />
             <ValidationMessage For="@(() => newProduct.InStock)" />
         </div>

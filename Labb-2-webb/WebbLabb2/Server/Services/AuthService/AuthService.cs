@@ -14,13 +14,14 @@ namespace WebbLabb2.Server.Services.AuthService
     {
         private readonly StoreContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthService(StoreContext context, IConfiguration configuration)
+        public AuthService(StoreContext context, IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
             _context = context;
             _configuration = configuration;
+            _contextAccessor = contextAccessor;
         }
-
         public async Task<ServiceResponse<int>> RegisterUserAsync(UserModel user, string password)
         {
             if (await CheckUserExistsAsync(user.Email))
@@ -136,12 +137,13 @@ namespace WebbLabb2.Server.Services.AuthService
         private string CreateToken(UserModel user)
         {
             var claims = new List<Claim>
-        {
-            new (ClaimTypes.Email, user.Email),
-            new (ClaimTypes.MobilePhone, user.PhoneNumber),
-            new(ClaimTypes.Name, user.Id.ToString()),
-            new (ClaimTypes.NameIdentifier, user.Id.ToString())
-        };
+            {
+                new (ClaimTypes.Email, user.Email),
+                new (ClaimTypes.MobilePhone, user.PhoneNumber),
+                new(ClaimTypes.Name, user.Id.ToString()),
+                new (ClaimTypes.Role, user.Role),
+                new (ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
 
             var secret = _configuration.GetSection("AppSecrets:Secret").Value;
 
