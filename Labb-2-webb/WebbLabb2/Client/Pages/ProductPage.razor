@@ -5,31 +5,33 @@
 @inject HttpClient client
 
 
-@if (productService.Products is null || productService.Products.Count <= 0)
-{
-    <div>@productService.Message</div>
-}
-else
-{
-       <div class="container">
-        <div class="row row-cols-8 m-lg-5 d-flex align-items-center">
-               @foreach (var product in productService.Products)
-               {
-                   <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
-                       <a href="@("product/" + product.Id)">
-                           <img src="@product.ImageUrl" class="card-img-top mt-3" alt="Img">
-                       </a>
-                       <div class="card-body">
-                           <h4 class="card-title">@product.Name</h4>
-                           <h6 class="card-subtitle mb-2 text-muted">@("nr." + product.Number)</h6>
-                           <p class="card-text">@product.Description</p>
-                           <h6 class="card-text fw-bolder">@product.Price /@(product.IsWeightable ? "kg" : "st")</h6>
-                       </div>
-                   </div>
-               }
-           </div>
+<div class="container">
+    <div class="row row-cols-8 m-lg-5 d-flex align-items-center">
+        @if (productService.Products is not null)
+        {
+            @foreach (var product in productService.Products)
+            {
+                <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
+                    <a href="@("product/" + product.Id)">
+                        <img src="@product.ImageUrl" class="card-img-top mt-3" alt="Img">
+                    </a>
+                    <div class="card-body">
+                        <h4 class="card-title">@product.Name</h4>
+                        <h6 class="card-subtitle mb-2 text-muted">@("nr." + product.Number)</h6>
+                        <p class="card-text">@product.Description</p>
+                        <h6 class="card-text fw-bolder">@product.Price /@(product.IsWeightable ? "kg" : "st")</h6>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div>product doesn't exist</div>
+        }
+       
     </div>
-}
+</div>
+
 
 
 @code {

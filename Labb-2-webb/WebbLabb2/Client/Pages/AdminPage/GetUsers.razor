@@ -1,0 +1,132 @@
+﻿@page "/admin/users"
+@page "/admin/searchuser/{searchText}"
+@using WebbLabb2.Client.Services.UserService
+@using WebbLabb2.Shared.DTOs
+@inject IUserService userService
+@implements IDisposable
+@inject HttpClient client
+@inject NavigationManager navigationManager
+@attribute [Authorize (Roles = "Admin")]
+
+<div class="input-group">
+    <input @bind-value="searchText"
+           @bind-value:event="oninput"
+           type="search"
+           list="users"
+           @onkeyup="HandleSearch"
+           class="form-control"
+           placeholder="Search..."
+           @ref="SearchInput" />
+    <div class="input-group-append">
+        <button class="btn btn-dark text-white" @onclick="SearchUser" disabled="@isSearchDisabled">
+            <span class="oi oi-magnifying-glass"></span>
+        </button>
+    </div>
+</div>
+
+@if ((userService.Users is null || userService.Users.Count <= 0) && userService.User is null)
+{
+    <div>@userService.Message</div>
+}
+
+else
+{
+    var users = string.IsNullOrEmpty(searchText)
+        ? userService.Users
+        : userService.Users.Where(u => u.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase));
+
+    if (users != null && !users.Any())
+    {
+        <div class="m-3 d-flex fs-3 justify-content-center align-items-center">@("User with email ' " + searchText + " ' not found.")</div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row m-lg-5 d-flex align-items-center">
+                @if (userService.User is null)
+                {
+                    @foreach (var user in userService.Users)
+                    {
+                        <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
+                            <div class="card-body">
+                                <h4 class="card-title mb-1">@("ID: " + user.Id)</h4>
+                                <h5 class="card-subtitle mb-1">@("First Name: " + user.FirstName)</h5>
+                                <h5 class="card-subtitle mb-1">@("Last Name: " + user.LastName)</h5>
+                                <h6 class="card-text">@("E-mail: " + user.Email)</h6>
+                                <h6 class="card-text">@("Telephone: " + user.PhoneNumber)</h6>
+                                <p class="card-text">@("Adress: " + user.Adress)</p>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
+                        <div class="card-body">
+                            <h4 class="card-title mb-1">@("ID: " + userService.User.Id)</h4>
+                            <h5 class="card-subtitle mb-1">@("First Name: " + userService.User.FirstName)</h5>
+                            <h5 class="card-subtitle mb-1">@("Last Name: " + userService.User.LastName)</h5>
+                            <h6 class="card-text">@("E-mail: " + userService.User.Email)</h6>
+                            <h6 class="card-text">@("Telephone: " + userService.User.PhoneNumber)</h6>
+                            <p class="card-text">@("Adress: " + userService.User.Adress)</p>
+                            <a href="admin/userorders/@userService.User.Id" class="btn btn-primary">Check Orders</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    
+}
+
+
+
+@code {
+
+    private string? message { get; set; }
+    [Parameter]
+    public string searchText { get; set; } = null;
+
+    protected ElementReference SearchInput;
+    private bool isSearchDisabled = true;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        {
+            isSearchDisabled = string.IsNullOrEmpty(searchText);
+            await userService.GetUserByEmail(searchText);
+        }
+        await userService.GetAllUsers();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userService.UsersChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        userService.UsersChanged -= StateHasChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await SearchInput.FocusAsync();
+        }
+    }
+
+    public void SearchUser()
+    {
+        navigationManager.NavigateTo($"admin/searchuser/{searchText}");
+    }
+
+    public async Task HandleSearch(KeyboardEventArgs args)
+    {
+        if (args.Key is "Enter") 
+        {
+            SearchUser();
+        }
+    }
+}

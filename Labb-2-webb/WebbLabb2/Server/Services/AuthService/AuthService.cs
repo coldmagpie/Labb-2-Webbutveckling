@@ -138,9 +138,6 @@ namespace WebbLabb2.Server.Services.AuthService
         {
             var claims = new List<Claim>
             {
-                new (ClaimTypes.Email, user.Email),
-                new (ClaimTypes.MobilePhone, user.PhoneNumber),
-                new(ClaimTypes.Name, user.Id.ToString()),
                 new (ClaimTypes.Role, user.Role),
                 new (ClaimTypes.NameIdentifier, user.Id.ToString())
             };

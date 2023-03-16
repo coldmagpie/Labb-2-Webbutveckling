@@ -2,22 +2,27 @@
 @page "/category/{category}"
 @page "/search/{searchText}"
 @using WebbLabb2.Client.Services.ProductService
-@using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal
 @inject IProductService productService
 
 <PageTitle>Products</PageTitle>
 
-<ProductPage />
+@if (productService.Products is not null)
+{
+    <ProductPage />
+}
+<div class="d-flex fs-4 justify-content-center align-items-center">@message</div>
 
-<div class="alert alert-warning" role="alert">@message</div>
+
+
+
 
 @code
 {
     [Parameter]
-    public string? category { get; set; } = null;
+    public string? category { get; set; }
 
     [Parameter]
-    public string? searchText { get; set; } = null;
+    public string? searchText { get; set; }
 
     private string? message { get; set; }= string.Empty;
 
@@ -25,20 +30,17 @@
     {
         if (searchText != null)
         {
-           var products = productService.GetProductBySearchText(searchText);
-            if (products is null)
+            await productService.GetProductBySearchText(searchText);
+            if (productService.Products.Count == 0)
             {
-                throw new InvalidOperationException("The products doesn't exist");
-                
+                message = $"No products found for '{searchText}' ";
             }
         }
         else
         {
-            var products = productService.GetProducts(category);
-            if (products is null)
-            {
-                throw new InvalidOperationException("The product doesn't exist");
-            }
+            await productService.GetProducts(category);
+            message = string.Empty;
         }
+
     }
 }

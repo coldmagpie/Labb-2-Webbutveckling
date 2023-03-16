@@ -1,6 +1,6 @@
 .navbar-toggler {
     background-color:lightskyblue;
-    height: 1.5rem;
+    height: 3rem;
 }
 
 .top-row {
@@ -53,13 +53,10 @@
     }
 
     .collapse {
-        /* Never collapse the sidebar for wide screens */
         display: block;
     }
     
     .nav-scrollable {
-        /* Allow sidebar to scroll for tall menus */
-       /* height: calc(100vh - 1.5rem);*/
         overflow-y: auto;
     }
 }

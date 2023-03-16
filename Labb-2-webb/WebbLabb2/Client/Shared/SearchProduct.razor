@@ -35,7 +35,7 @@
 
     public async Task HandleSearch(KeyboardEventArgs args)
     {
-        if (args.Key == null || args.Key.Equals("Enter"))
+        if (args.Key is null or "Enter")
         {
             SearchProducts();
         }

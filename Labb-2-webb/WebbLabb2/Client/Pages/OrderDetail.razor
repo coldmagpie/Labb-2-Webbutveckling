@@ -2,6 +2,7 @@
 @using WebbLabb2.Client.Services.OrderService
 @using DataAccess.DataAccess.Models
 @using WebbLabb2.Shared.DTOs
+@using System.Security.Claims
 @inject IOrderService orderService
 @inject AuthenticationStateProvider getAuthenticationStateAsync
 
@@ -50,8 +51,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var userId = authstate.User.Identity.Name;
-        Order = await orderService.GetOrderById(int.Parse(userId), OrderId);
-        OrderItems = await orderService.GetOrderItems(int.Parse(userId), OrderId);
+        var userId = int.Parse(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        Order = await orderService.GetOrderById(userId, OrderId);
+        OrderItems = await orderService.GetOrderItems(userId, OrderId);
     }
 }

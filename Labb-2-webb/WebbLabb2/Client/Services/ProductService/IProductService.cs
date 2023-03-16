@@ -12,8 +12,6 @@ public interface IProductService
     public Task<ProductModel> CreateProduct(ProductDto dto);
     public Task GetProducts(string ? category = null);
     public Task <ProductDto> GetProductById(int id);
-    public Task <ProductDto> GetProductByName(string name);
-    public Task <ProductDto> GetProductByNumber(string number);
     public Task GetProductBySearchText (string text);
     public Task <ProductModel> UpdateProduct(int id, ProductDto dto);
     public Task DeleteProductAsync(int id);

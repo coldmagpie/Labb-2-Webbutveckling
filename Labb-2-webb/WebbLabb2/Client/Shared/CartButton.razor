@@ -4,7 +4,7 @@
 @implements IDisposable
 @inject ICartService cartService
 
-<a href="cart" class="btn btn-dark">
+<a href="cart" class="btn btn-dark m-3">
     <i class="oi oi-cart"></i>
     <span class="badge">@GetItemsCount()</span>
 </a>
@@ -13,7 +13,7 @@
     private int GetItemsCount()
     {
         var cart = LocalStorage.GetItem<List<CartItemDto>>("cart");
-        return cart != null ? cart.Count : 0 ;
+        return cart?.Count ?? 0 ;
     }
 
     protected override void OnInitialized()

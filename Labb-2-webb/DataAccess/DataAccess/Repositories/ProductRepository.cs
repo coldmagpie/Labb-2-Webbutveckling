@@ -144,16 +144,9 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             .Where(p => p.Name.ToLower().Contains(text.ToLower()) ||
                         p.Description.ToLower().Contains(text.ToLower()) || p.Number.Contains(text))
             .ToListAsync();
-        if (products.Count == 0)
-        {
-            response.Error = true;
-            response.Message = $"Sorry, no result found";
-        }
-        else
-        {
-            response.Error = false;
-            response.Data = products;
-        };
+        response.Error = false;
+        response.Data = products;
+        
         return response;
     }
 

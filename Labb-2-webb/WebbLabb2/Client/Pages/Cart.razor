@@ -3,6 +3,7 @@
 @using WebbLabb2.Client.Services.AuthService
 @using WebbLabb2.Client.Services.OrderService
 @using WebbLabb2.Shared.DTOs
+@using System.Security.Claims
 @inject ICartService cartService
 @inject IAuthService authService
 @inject IOrderService orderService
@@ -133,8 +134,8 @@ else
         isSubmitted = true;
         StateHasChanged();
         var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var userId = authstate.User.Identity.Name;
-        var result = await orderService.PlaceOrder(int.Parse(userId), cartProducts);
+        var userId = int.Parse(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        await orderService.PlaceOrder(userId, cartProducts);
         await cartService.ClearCart();
         cartService.CartChanged += StateHasChanged;
     }

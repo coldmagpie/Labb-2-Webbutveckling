@@ -12,7 +12,7 @@
 <h3 class="row row-cols-4 flex-column align-items-center mb-4">Login</h3>
 
 
-<EditForm Model="user" OnValidSubmit="HandleLogin">
+<EditForm Model="user" OnValidSubmit="LoginHandler">
     <DataAnnotationsValidator />
     <div class="container">
         <div class="row row-cols-4 d-flex flex-column align-items-center">
@@ -49,7 +49,7 @@
         }
     }
 
-    private async Task HandleLogin()
+    private async Task LoginHandler()
     {
         var result = await AuthService.Login(user);
         if (result.Error)

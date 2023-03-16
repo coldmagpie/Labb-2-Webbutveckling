@@ -12,7 +12,7 @@ public class ProductService : IProductService
 {
     private readonly HttpClient _httpClient;
     public event Action ProductsChanged;
-    public string Message { get; set; } = "We work hard to get the products....";
+    public string Message { get; set; } = "We work hard to get products...";
     public List<ProductDto> Products { get; set; } = new ();
     public ProductService(HttpClient httpClient)
     {
@@ -41,7 +41,7 @@ public class ProductService : IProductService
             await _httpClient.GetFromJsonAsync<List<ProductDto>>("/products"):
             await _httpClient.GetFromJsonAsync<List<ProductDto>>($"/categoryproducts/{category}");
 
-        Products = result.ToList();
+        if (result != null) Products = result.ToList();
         ProductsChanged?.Invoke();
     }
 
@@ -62,31 +62,11 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task <ProductDto> GetProductByName(string name)
-    {
-        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductDto>>($"/productname/{name}");
-        if (result.Error)
-        {
-            result.Message = "Product not found";
-        }
-        return result.Data;
-    }
-    public async Task <ProductDto> GetProductByNumber(string number)
-    {
-        var result = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductDto>>($"/productnumber/{number}");
-        if (result.Error)
-        {
-            result.Message = "Product not found";
-        }
-
-        return result.Data;
-    }
-
     public async Task GetProductBySearchText(string text)
     {
         var result = await _httpClient.GetFromJsonAsync<List<ProductDto>>($"/searchproduct/{text}");
-      
-        Products = result.ToList();
+
+        if (result != null) Products = result.ToList();
         ProductsChanged?.Invoke();
     }
 
