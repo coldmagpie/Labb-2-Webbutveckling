@@ -6,8 +6,6 @@ using WebbLabb2.Client;
 using WebbLabb2.Client.Services.AuthService;
 using WebbLabb2.Client.Services.CategoryService;
 using WebbLabb2.Client.Services.ProductService;
-using Blazored.LocalStorage;
-using DataAccess.DataAccess.Interfaces;
 using WebbLabb2.Client.Services.CartService;
 using WebbLabb2.Client.Services.OrderService;
 using WebbLabb2.Client.Services.UserService;

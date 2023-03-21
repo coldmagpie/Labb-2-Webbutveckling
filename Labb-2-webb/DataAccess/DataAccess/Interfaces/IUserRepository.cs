@@ -11,8 +11,7 @@ namespace DataAccess.DataAccess.Interfaces
     public interface IUserRepository<T>
     {
         Task<ServiceResponse<List<T>>> GetAllUsers();
-        Task<ServiceResponse<T>> GetUserByEmail(string email);
-
+        Task<ServiceResponse<List<T>>> GetUserByEmail(string email);
         Task<ServiceResponse<T>> GetUserById(int id);
         //Task<ServiceResponse<List<ProductModel>>> GetUserOrderItems(int userId, int orderId);
     }

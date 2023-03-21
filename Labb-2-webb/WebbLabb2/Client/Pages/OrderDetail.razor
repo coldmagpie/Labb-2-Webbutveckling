@@ -1,10 +1,6 @@
 ﻿@page "/order/{orderId:int}/detail"
-@using WebbLabb2.Client.Services.OrderService
-@using DataAccess.DataAccess.Models
-@using WebbLabb2.Shared.DTOs
-@using System.Security.Claims
-@inject IOrderService orderService
-@inject AuthenticationStateProvider getAuthenticationStateAsync
+@inject IOrderService OrderService
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 @if (Order == null)
 {
@@ -46,13 +42,13 @@ else
     public int OrderId { get; set; }
 
     OrderDto Order = null;
-    IList<OrderItemsDto> OrderItems = null;
+    List<OrderItemsDto> OrderItems = null;
 
     protected override async Task OnInitializedAsync()
     {
-        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         var userId = int.Parse(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        Order = await orderService.GetOrderById(userId, OrderId);
-        OrderItems = await orderService.GetOrderItems(userId, OrderId);
+        Order = await OrderService.GetOrderById(userId, OrderId);
+        OrderItems = await OrderService.GetOrderItems(userId, OrderId);
     }
 }

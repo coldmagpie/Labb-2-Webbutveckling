@@ -1,8 +1,6 @@
 ﻿@page "/admin/createproduct"
-@using WebbLabb2.Client.Services.ProductService
-@using WebbLabb2.Shared.DTOs
-@using Microsoft.AspNetCore.Components
-@inject IProductService productService
+@inject IProductService ProductService
+@inject ICategoryService CategoryService
 @attribute [Authorize (Roles = "Admin")]
 
 <h3 class="mb-5 row d-flex flex-column align-items-center fw-bolder">Create Product</h3>
@@ -41,9 +39,20 @@
             <ValidationMessage For="@(() => newProduct.Price)" />
         </div>
         <div class="mb-3">
-            <label for="categoryId">Category (1-Fruit 2-Vegetable 3-Dairy)</label>
-            <InputNumber id="categoryId" @bind-Value="newProduct.CategoryId" class="form-control" />
-            <ValidationMessage For="@(() => newProduct.CategoryId)" />
+            <label for="categoryId">Category</label>
+            <InputSelect class="form-select" @bind-Value="newProduct.CategoryId" @onchange="@SelectCategory">
+                @foreach (var category in categories)
+                {
+                    @if (categories is null)
+                    {
+                        <option selected value="">None</option>
+                    }
+                    else
+                    {
+                        <option selected value="@category.Id">@category.Name</option>
+                    }
+                }
+            </InputSelect>
         </div>
         <div class="mb-3">
             <label for="inStock">In Stock? (Check if true)</label>
@@ -60,14 +69,23 @@ else
 
 @code {
 
-    private string message = string.Empty;
+    private List<CategoryDto> categories = new ();
     ProductDto newProduct = new ProductDto();
     bool isSubmitted = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryService.GetAllCategories();
+    }
+    void SelectCategory(ChangeEventArgs e)
+    {
+        newProduct.CategoryId = categories.First(c => c.Id.ToString() == e.Value?.ToString()).Id;
+    }
 
     private async Task CreateNewProduct()
     {
         isSubmitted = true;
         StateHasChanged();
-        var result = await productService.CreateProduct(newProduct);
+        await ProductService.CreateProduct(newProduct);
     }
 }

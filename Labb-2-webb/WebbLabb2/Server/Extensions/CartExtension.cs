@@ -17,11 +17,7 @@ namespace WebbLabb2.Server.Extensions
         {
             var serviceResponse = await repo.GetCartProducts(items);
 
-            if (serviceResponse.Error)
-            {
-                return Results.BadRequest("Items not found");
-            }
-            return Results.Ok(serviceResponse.Data);
+            return serviceResponse.Error ? Results.BadRequest("Items not found") : Results.Ok(serviceResponse);
         }
     }
 }

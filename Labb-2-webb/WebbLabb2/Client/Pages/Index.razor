@@ -1,12 +1,11 @@
 ﻿@page "/"
 @page "/category/{category}"
 @page "/search/{searchText}"
-@using WebbLabb2.Client.Services.ProductService
-@inject IProductService productService
+@inject IProductService ProductService
 
 <PageTitle>Products</PageTitle>
 
-@if (productService.Products is not null)
+@if (ProductService.Products is not null)
 {
     <ProductPage />
 }
@@ -30,17 +29,16 @@
     {
         if (searchText != null)
         {
-            await productService.GetProductBySearchText(searchText);
-            if (productService.Products.Count == 0)
+            await ProductService.GetProductBySearchText(searchText);
+            if (ProductService.Products.Count == 0)
             {
-                message = $"No products found for '{searchText}' ";
+                message = $"No products found for '{searchText}', please check the spelling";
             }
         }
         else
         {
-            await productService.GetProducts(category);
+            await ProductService.GetProducts(category);
             message = string.Empty;
         }
-
     }
 }

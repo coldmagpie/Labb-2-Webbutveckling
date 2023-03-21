@@ -56,23 +56,19 @@ namespace WebbLabb2.Client.Services.CartService
                 return new List<CartProductDto>();
             } 
             var response = await _httpClient.PostAsJsonAsync("/cartproducts", cartItems);
-            var result = await response.Content.ReadFromJsonAsync<List<CartProductDto>>();
-            return result;
+            var result = await response.Content.ReadFromJsonAsync<ServiceResponse<List<CartProductDto>>>();
+            return result.Data;
         }
 
         public async Task RemoveProduct(int productId)
         {
             var cart = await _localStorage.GetItemAsync<List<CartItemDto>>("cart");
-            if (cart is null)
-            {
-                return;
-            }
-            var item = cart.FirstOrDefault(i=>i.productId == productId);
+            var item = cart?.FirstOrDefault(i=>i.productId == productId);
             if (item is null)
             {
                 return;
             }
-            cart.Remove(item);
+            cart?.Remove(item);
             await _localStorage.SetItemAsync("cart", cart);
             CartChanged.Invoke();
 
@@ -81,11 +77,7 @@ namespace WebbLabb2.Client.Services.CartService
         public async Task UpdateQuantity(CartProductDto product)
         {
             var cart = await _localStorage.GetItemAsync<List<CartItemDto>>("cart");
-            if (cart is null)
-            {
-                return;
-            }
-            var item = cart.FirstOrDefault(i => i.productId == product.ProductId);
+            var item = cart?.FirstOrDefault(i => i.productId == product.ProductId);
             if (item is null)
             {
                 return;

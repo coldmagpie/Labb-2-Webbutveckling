@@ -1,8 +1,6 @@
-﻿@using WebbLabb2.Client.Services.CartService
-@using WebbLabb2.Shared.DTOs
-@inject ISyncLocalStorageService LocalStorage
+﻿@inject ISyncLocalStorageService LocalStorage
 @implements IDisposable
-@inject ICartService cartService
+@inject ICartService CartService
 
 <a href="cart" class="btn btn-dark m-3">
     <i class="oi oi-cart"></i>
@@ -18,11 +16,11 @@
 
     protected override void OnInitialized()
     {
-        cartService.CartChanged += StateHasChanged;
+        CartService.CartChanged += StateHasChanged;
     }
 
     public void Dispose()
     {
-        cartService.CartChanged -= StateHasChanged;
+        CartService.CartChanged -= StateHasChanged;
     }
 }

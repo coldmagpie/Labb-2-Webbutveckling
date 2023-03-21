@@ -7,7 +7,7 @@
            list="products"
            @onkeyup="HandleSearch"
            class="form-control"
-           placeholder="Search..."
+           placeholder="Search product here..."
            @ref="searchInput" />
     <div>
         <button class="btn btn-dark text-white" @onclick="SearchProducts">
@@ -32,12 +32,23 @@
     {
         NavigationManager.NavigateTo($"search/{searchText}");
     }
+    public void GoBack()
+    {
+        NavigationManager.NavigateTo("/");
+    }
 
-    public async Task HandleSearch(KeyboardEventArgs args)
+    private async Task HandleSearch(KeyboardEventArgs args)
     {
         if (args.Key is null or "Enter")
         {
-            SearchProducts();
+            if(string.IsNullOrEmpty(searchText))
+            {
+                GoBack();
+            }
+            else
+            {
+                SearchProducts();
+            }
         }
     }
 }

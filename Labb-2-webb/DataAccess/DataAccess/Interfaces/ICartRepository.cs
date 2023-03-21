@@ -10,9 +10,6 @@ namespace DataAccess.DataAccess.Interfaces
 {
     public interface ICartRepository
     {
-        event Action CartChanged;
-        //Task AddToCart(ProductDto dto);
         Task<ServiceResponse<List<CartProductDto>>> GetCartProducts(List<CartItemDto> cartItems);
-        //Task<ServiceResponse<bool>> RemoveItemFromCart(int productId, int productTypeId);
     }
 }

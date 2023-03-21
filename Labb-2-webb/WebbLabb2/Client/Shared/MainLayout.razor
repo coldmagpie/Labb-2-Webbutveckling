@@ -3,10 +3,12 @@
 <div class="page">
     <main>
         <div class="top-row px-2">
-            <AdminButton/>
-            <SearchProduct/>
-            <UserButton/>
-            <CartButton/>
+            <AuthorizeView Roles="Admin">
+                <AdminButton />
+            </AuthorizeView>
+            <SearchProduct />
+            <UserButton />
+            <CartButton />
         </div>
         <div class="nav-menu">
             <NavMenu />

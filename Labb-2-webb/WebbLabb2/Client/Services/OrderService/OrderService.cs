@@ -1,5 +1,6 @@
 ﻿using DataAccess.DataAccess.Models;
 using System.Net.Http.Json;
+using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
 namespace WebbLabb2.Client.Services.OrderService
@@ -17,6 +18,7 @@ namespace WebbLabb2.Client.Services.OrderService
         public async Task<OrderDto> PlaceOrder(int userId, List<CartProductDto> cartProducts)
         {
             var result = await _httpClient.PostAsJsonAsync($"/user/placeorder/{userId}", cartProducts);
+            await result.Content.ReadFromJsonAsync<ServiceResponse<OrderDto>>();
             var order = new OrderDto()
             {
                 DateTime = DateTime.Now,
@@ -26,7 +28,7 @@ namespace WebbLabb2.Client.Services.OrderService
 
             foreach (var item in cartProducts)
             {
-                var product = await _httpClient.GetFromJsonAsync<ProductDto>($"/products/{item.ProductId}");
+                var product = await _httpClient.GetFromJsonAsync<ServiceResponse<ProductDto>>($"/products/{item.ProductId}");
                 if (product == null)
                 {
                     continue;
@@ -35,8 +37,8 @@ namespace WebbLabb2.Client.Services.OrderService
                 var orderItem = new OrderItemsDto()
                 {
                     OrderId = order.Id,
-                    Product = product,
-                    PriceEach = product.Price,
+                    Product = product.Data,
+                    PriceEach = product.Data.Price,
                     Quantity = item.Quantity,
                 };
                 order.OrderItems.Add(orderItem);
@@ -46,23 +48,22 @@ namespace WebbLabb2.Client.Services.OrderService
 
         public async Task<List<OrderDto>> GetUserOrders(int userId)
         {
-            var result = await _httpClient.GetFromJsonAsync<List<OrderDto>>($"/user/{userId}/orders");
-            Orders = result.ToList();
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<OrderDto>>>($"/user/{userId}/orders");
+            Orders = result.Data;
             return Orders;
         }
 
         public async Task<OrderDto> GetOrderById(int userId, int orderId)
         {
-            var result = await _httpClient.GetFromJsonAsync<OrderDto>($"/user/{userId}/order/{orderId}");
-            return result;
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<OrderDto>>($"/user/{userId}/order/{orderId}");
+            return result.Data;
         }
 
         public async Task<List<OrderItemsDto>> GetOrderItems(int userId, int orderId)
         {
             var result =
-                await _httpClient.GetFromJsonAsync<List<OrderItemsDto>>($"/user/{userId}/order/{orderId}/detail");
-            var orderItems = result.ToList();
-            return orderItems;
+                await _httpClient.GetFromJsonAsync<ServiceResponse<List<OrderItemsDto>>>($"/user/{userId}/order/{orderId}/detail");
+            return result.Data;
         }
     }
 }

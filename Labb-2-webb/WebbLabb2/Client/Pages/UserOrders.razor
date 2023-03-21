@@ -1,12 +1,7 @@
 ﻿@page "/orders"
-@using WebbLabb2.Client.Services.OrderService
-@using DataAccess.DataAccess.Models
-@using WebbLabb2.Client.Services.AuthService
-@using WebbLabb2.Shared.DTOs
-@using System.Security.Claims
-@inject IOrderService orderService
-@inject IAuthService authService
-@inject AuthenticationStateProvider getAuthenticationStateAsync
+@inject IOrderService OrderService
+@inject IAuthService AuthService
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 <h3>Orders by @user.FirstName @user.LastName</h3>
 
@@ -42,13 +37,13 @@ else
     public int userId { get; set; }
 
     List<OrderDto> orders = new ();
-    UserProfileDto user = new();
+    UserProfileDto user = new ();
 
     protected override async Task OnInitializedAsync()
     {
-        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         userId = int.Parse(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        user = await authService.GetUserById(userId);
-        orders = await orderService.GetUserOrders(userId);
+        user = await AuthService.GetUserById(userId);
+        orders = await OrderService.GetUserOrders(userId);
     }
 }

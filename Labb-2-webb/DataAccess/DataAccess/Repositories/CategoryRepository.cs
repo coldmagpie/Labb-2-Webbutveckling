@@ -95,9 +95,4 @@ public class CategoryRepository:ICategoryRepository<CategoryModel, CategoryDto>
 
         return response;
     }
-    public async Task<CategoryModel> GetCategoryByName(string name)
-    {
-        var category = await _storeContext.Categories.FirstOrDefaultAsync(c => c.Name.Equals(name));
-        return category;
-    }
 }

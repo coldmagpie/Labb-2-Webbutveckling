@@ -1,9 +1,4 @@
 ﻿using DataAccess.DataAccess.DataContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
@@ -49,10 +44,10 @@ namespace DataAccess.DataAccess.Repositories
             return new ServiceResponse<UserModel> { Data = user, Error = false };
         }
 
-        public async Task<ServiceResponse<UserModel>> GetUserByEmail(string email)
+        public async Task<ServiceResponse<List<UserModel>>> GetUserByEmail(string email)
         {
-            var response = new ServiceResponse<UserModel>();
-            var user = await _storeContext.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
+            var response = new ServiceResponse<List<UserModel>>();
+            var user = await _storeContext.Users.Where(u => u.Email.Contains(email)).ToListAsync();
             if (user is null)
             {
                 response.Error = true;

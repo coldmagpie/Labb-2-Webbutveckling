@@ -63,46 +63,11 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         return response;
     }
 
-
-    public async Task<ServiceResponse<ProductModel>> GetProductByNumberAsync(string number)
-    {
-        var response = new ServiceResponse<ProductModel>();
-        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Number.Equals(number));
-        if (product is null)
-        {
-            response.Error = true;
-            response.Message = $"Sorry, this product doesn't exist";
-        }
-        else
-        {
-            response.Data = product;
-        }
-
-        return response;
-    }
-
     public async Task<ServiceResponse<ProductModel>> GetProductByIdAsync(int id)
     {
 
         var response = new ServiceResponse<ProductModel>();
         var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Id == id);
-        if (product is null)
-        {
-            response.Error = true;
-            response.Message = $"Sorry, this product doesn't exist";
-        }
-        else
-        {
-            response.Error = false;
-            response.Data = product;
-        }
-        return response;
-    }
-
-    public async Task<ServiceResponse<ProductModel>> GetProductByNameAsync(string name)
-    {
-        var response = new ServiceResponse<ProductModel>();
-        var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Name.Equals(name));
         if (product is null)
         {
             response.Error = true;

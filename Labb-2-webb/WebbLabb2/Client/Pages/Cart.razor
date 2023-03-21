@@ -1,21 +1,14 @@
 ﻿@page "/cart"
-@using WebbLabb2.Client.Services.CartService
-@using WebbLabb2.Client.Services.AuthService
-@using WebbLabb2.Client.Services.OrderService
-@using WebbLabb2.Shared.DTOs
-@using System.Security.Claims
 @inject ICartService cartService
-@inject IAuthService authService
-@inject IOrderService orderService
-@inject NavigationManager navigationManager
-@inject AuthenticationStateProvider getAuthenticationStateAsync
+@inject IOrderService OrderService
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 @implements IDisposable
 
 <PageTitle>Cart</PageTitle>
 
 <h3>Here comes your Cart!</h3>
 
-@if (cartProducts == null || cartProducts.Count == 0)
+@if (cartProducts is null || cartProducts.Count == 0)
 {
     <span>@message</span>
 }
@@ -26,13 +19,13 @@ else
         <table class="table">
             <thead>
             <tr>
-                <th></th>
+                <th ></th>
                 <th >Product</th>
-                <th  >Price</th>
+                <th >Price</th>
                 <th >Quantity</th>
                 <th >Total Price</th>
-                <th>Delete</th>
-                <th></th>
+                <th >Delete</th>
+                <th ></th>
             </tr>
             </thead>
             <tbody>
@@ -55,7 +48,7 @@ else
                             </button>
                         </td>
                     </div>
-                    <td>@(product.Price * product.Quantity)</td>
+                        <td>@Math.Round((product.Price * product.Quantity),2)</td>
                     <td><button class="btn btn-warning" @onclick="(() => RemoveProduct(product.ProductId))">
                         <i class="oi oi-trash"></i>
                     </button></td>
@@ -91,7 +84,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        isAuthenticated = await authService.IsUserAuthenticated();
+        //await AuthService.IsUserAuthenticated();
         await LoadCart();
         cartService.CartChanged += StateHasChanged;
     }
@@ -133,9 +126,9 @@ else
     {
         isSubmitted = true;
         StateHasChanged();
-        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
         var userId = int.Parse(authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-        await orderService.PlaceOrder(userId, cartProducts);
+        await OrderService.PlaceOrder(userId, cartProducts);
         await cartService.ClearCart();
         cartService.CartChanged += StateHasChanged;
     }

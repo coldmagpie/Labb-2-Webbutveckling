@@ -14,21 +14,15 @@ namespace WebbLabb2.Client.Services.CategoryService
             _httpClient = httpClient;
         }
 
-        public List<CategoryDto> Categories { get; set; } = new List<CategoryDto>();
+        public List<CategoryDto> Categories { get; set; } = new ();
 
         public event Action OnChange;
 
         public async Task<List<CategoryDto>> GetAllCategories()
         {
-            var result = await _httpClient.GetFromJsonAsync<List<CategoryDto>>("categories");
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<CategoryDto>>>("categories");
 
-            Categories = result
-                //.Select(p => new CategoryDto
-            //{
-            //    Id = p.Id,
-            //    Name = p.Name
-            //})
-            .ToList();
+            Categories = result.Data;
             OnChange?.Invoke();
             return Categories;
         }

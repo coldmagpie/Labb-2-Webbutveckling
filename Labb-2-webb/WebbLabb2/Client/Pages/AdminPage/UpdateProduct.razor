@@ -1,7 +1,6 @@
 ﻿@page "/admin/updateproduct/{id:int}"
-@using WebbLabb2.Client.Services.ProductService
-@using WebbLabb2.Shared.DTOs
-@inject IProductService productService
+@inject IProductService ProductService
+@inject ICategoryService CategoryService
 @attribute [Authorize (Roles = "Admin")]
 
 @if (product == null)
@@ -64,9 +63,20 @@ else
             <ValidationMessage For="@(() => updateProduct.Price)" />
         </div>
         <div class="mb-3">
-            <label for="categoryId">Category (1-Fruit 2-Vegetable 3-Dairy)</label>
-            <InputNumber id="categoryId" @bind-Value="updateProduct.CategoryId" class="form-control" />
-            <ValidationMessage For="@(() => updateProduct.CategoryId)" />
+            <label for="categoryId">Category</label>
+            <InputSelect class="form-select" @bind-Value="updateProduct.CategoryId" @onchange= "@SelectCategory">
+                @foreach (var category in categories)
+                {
+                    @if (categories is null)
+                    {
+                        <option selected value="">None</option>
+                    }
+                    else
+                    {
+                        <option selected value="@category.Id">@category.Name</option>
+                    }
+                }
+            </InputSelect>
         </div>
         <div class="mb-3">
             <label for="inStock">In Stock? (Check if true)</label>
@@ -85,6 +95,7 @@ else
     private ProductDto? product = null;
     private string message = string.Empty;
     ProductDto updateProduct = new ProductDto();
+    List<CategoryDto> categories = new();
     bool isSubmitted = false;
 
     [Parameter]
@@ -93,12 +104,20 @@ else
     protected override async Task OnParametersSetAsync()
     {
         message = "Loading product...";
-        product = await productService.GetProductById(Id);
+        product = await ProductService.GetProductById(Id);
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryService.GetAllCategories();
+    }
+    void SelectCategory(ChangeEventArgs e)
+    {
+        updateProduct.CategoryId = categories.First(c => c.Id.ToString() == e.Value?.ToString()).Id;
     }
     private async Task ChangeProduct()
     {
         isSubmitted = true;
         StateHasChanged();
-        var result = await productService.UpdateProduct(product.Id, updateProduct);
+        var result = await ProductService.UpdateProduct(product.Id, updateProduct);
     }
 }

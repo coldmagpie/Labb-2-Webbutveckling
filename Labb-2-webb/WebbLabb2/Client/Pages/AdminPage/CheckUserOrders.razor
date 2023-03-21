@@ -1,10 +1,6 @@
 ﻿@page "/admin/userorders/{id:int}"
-@using WebbLabb2.Shared.DTOs
-@using WebbLabb2.Client.Services.AuthService
-@using WebbLabb2.Client.Services.OrderService
-@inject IAuthService authService
-@inject IOrderService orderService
-
+@inject IAuthService AuthService
+@inject IOrderService OrderService
 
 <h3>Orders by @user.FirstName @user.LastName</h3>
 
@@ -67,11 +63,11 @@ else
 
     List<OrderDto> orders = new List<OrderDto>();
 
-    UserProfileDto user = new UserProfileDto();
+    UserProfileDto user = new ();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await authService.GetUserById(Id);
-        orders = await orderService.GetUserOrders(Id);
+        user = await AuthService.GetUserById(Id);
+        orders = await OrderService.GetUserOrders(Id);
     }
 }

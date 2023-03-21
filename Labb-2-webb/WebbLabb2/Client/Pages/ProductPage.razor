@@ -1,15 +1,13 @@
-@using WebbLabb2.Client.Services.ProductService
-@using WebbLabb2.Shared.DTOs
-@inject IProductService productService
+@inject IProductService ProductService
 @implements IDisposable
-@inject HttpClient client
+@inject HttpClient Client
 
 
 <div class="container">
     <div class="row row-cols-8 m-lg-5 d-flex align-items-center">
-        @if (productService.Products is not null)
+        @if (ProductService.Products is not null)
         {
-            @foreach (var product in productService.Products)
+            @foreach (var product in ProductService.Products)
             {
                 <div class="card col-lg-3 col-md-5 col-sm-10 m-4">
                     <a href="@("product/" + product.Id)">
@@ -38,11 +36,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        productService.ProductsChanged += StateHasChanged;
+        ProductService.ProductsChanged += StateHasChanged;
     }
 
     public void Dispose()
     {
-        productService.ProductsChanged -= StateHasChanged;
+        ProductService.ProductsChanged -= StateHasChanged;
     }
 }

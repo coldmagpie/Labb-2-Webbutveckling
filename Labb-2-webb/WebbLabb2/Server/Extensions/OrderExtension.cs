@@ -17,40 +17,24 @@ namespace WebbLabb2.Server.Extensions
 
         private static async Task<IResult> GetOrderById(IOrderRepository repo, int userId, int orderId)
         {
-            var serviceResponse = await repo.GetOrderById(userId, orderId);
-            if (serviceResponse.Error)
-            {
-                return Results.BadRequest("Sorry, place order failed");
-            }
-            return Results.Ok(serviceResponse.Data);
+            var response = await repo.GetOrderById(userId, orderId);
+            return response.Error ? Results.BadRequest("Sorry, place order failed") : Results.Ok(response);
         }
 
         private static async Task<IResult> PlaceOrderAsync(IOrderRepository repo, int userId, List<CartProductDto> cartProducts)
         {
-            var serviceResponse = await repo.PlaceOrder(userId, cartProducts);
-            if (serviceResponse.Error)
-            {
-                return Results.BadRequest("Sorry, place order failed");
-            }
-            return Results.Ok(serviceResponse.Data);
+            var response = await repo.PlaceOrder(userId, cartProducts);
+            return response.Error ? Results.BadRequest("Sorry, place order failed") : Results.Ok(response);
         }
         private static async Task<IResult> GetOrdersAsync(IOrderRepository repo, int userId)
         {
-            var serviceResponse = await repo.GetOrders(userId);
-            if (serviceResponse.Error)
-            {
-                return Results.BadRequest("You have no order");
-            }
-            return Results.Ok(serviceResponse.Data);
+            var response = await repo.GetOrders(userId);
+            return response.Error ? Results.BadRequest("You have no order") : Results.Ok(response);
         }
         private static async Task<IResult> GetOrderItems(IOrderRepository repo, int userId, int orderId)
         {
-            var serviceResponse = await repo.GetOrderItems(userId, orderId);
-            if (serviceResponse.Error)
-            {
-                return Results.BadRequest("Sorry, order not found");
-            }
-            return Results.Ok(serviceResponse.Data);
+            var response = await repo.GetOrderItems(userId, orderId);
+            return response.Error ? Results.BadRequest("Sorry, order not found") : Results.Ok(response);
         }
 
     }

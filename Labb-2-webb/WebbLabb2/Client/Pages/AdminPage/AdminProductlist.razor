@@ -1,12 +1,11 @@
 ﻿@page "/admin/productlist"
-@using WebbLabb2.Client.Services.ProductService
-@inject IProductService productService
-@inject NavigationManager navigationManager
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
 @attribute [Authorize (Roles = "Admin")]
 
 <h3>Products</h3>
 
-@if (productService.Products == null)
+@if (ProductService.Products == null)
 {
     <span>Loading Products...</span>
 }
@@ -28,7 +27,7 @@ else
             </tr>
         </thead>
         <tbody>
-            <Virtualize Items="productService.Products" Context="product">
+            <Virtualize Items="ProductService.Products" Context="product">
                 <tr>
                     <td><img src="@product.ImageUrl" class="image" /></td>
                     <td>@product.Name</td>
@@ -53,23 +52,23 @@ else
 @code {
     protected override async Task OnInitializedAsync()
     {
-        await productService.GetProducts();
+        await ProductService.GetProducts();
     }
 
     void EditProduct(int productId)
     {
-        navigationManager.NavigateTo($"admin/updateproduct/{productId}");
+        NavigationManager.NavigateTo($"admin/updateproduct/{productId}");
     }
 
     void CreateProduct()
     {
-        navigationManager.NavigateTo("admin/createproduct");
+        NavigationManager.NavigateTo("admin/createproduct");
     }
 
     private async Task DeleteProduct(int id)
     {
-        var result = productService.DeleteProductAsync(id);
-        await productService.GetProducts();
-        navigationManager.NavigateTo(navigationManager.Uri, true);
+        var result = ProductService.DeleteProductAsync(id);
+        await ProductService.GetProducts();
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }
 }

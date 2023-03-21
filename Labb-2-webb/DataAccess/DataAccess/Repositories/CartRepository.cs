@@ -8,7 +8,6 @@ namespace DataAccess.DataAccess.Repositories
 {
     public class CartRepository : ICartRepository
     {
-        public event Action? CartChanged;
         private readonly StoreContext _storeContext;
 
         public CartRepository(StoreContext storeContext)

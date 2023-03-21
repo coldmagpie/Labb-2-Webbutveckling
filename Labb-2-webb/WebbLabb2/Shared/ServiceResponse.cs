@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace WebbLabb2.Shared;
+﻿namespace WebbLabb2.Shared;
 
 public class ServiceResponse<T>
 {

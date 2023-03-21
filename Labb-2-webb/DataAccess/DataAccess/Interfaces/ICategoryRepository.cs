@@ -9,5 +9,5 @@ public interface ICategoryRepository<T, TU>
     Task<ServiceResponse<T>> AddCategoryAsync(TU item);
     Task<ServiceResponse<T>> DeleteCategoryAsync(int id);
     Task<ServiceResponse<T>> UpdateCategoryAsync(int id, TU item);
-    Task<T> GetCategoryByName(string name);
+    //Task<T> GetCategoryByName(string name);
 }

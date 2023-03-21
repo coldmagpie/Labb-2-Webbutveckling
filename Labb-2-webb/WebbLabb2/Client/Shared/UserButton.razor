@@ -1,8 +1,6 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
-@inject ILocalStorageService localStorage
-@inject AuthenticationStateProvider authenticationStateProvider
-@inject NavigationManager navigationManager
+﻿@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 
 <div class="dropdown">
     <button @onclick="ToggleUserMenu"
@@ -19,7 +17,7 @@
                 <button class="dropdown-item" @onclick="Logout">Logout</button>
             </Authorized>
             <NotAuthorized>
-                <a href="login?returnUrl=@navigationManager.ToBaseRelativePath(navigationManager.Uri)" class="dropdown-item">Login</a>
+                <a href="login" class="dropdown-item">Login</a>
                 <a href="register" class="dropdown-item">Register</a>
             </NotAuthorized>
         </AuthorizeView>
@@ -44,8 +42,8 @@
 
     private async Task Logout()
     {
-        await localStorage.RemoveItemAsync("authToken");
-        await authenticationStateProvider.GetAuthenticationStateAsync();
-        navigationManager.NavigateTo("");
+        await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo("");
     }
 }

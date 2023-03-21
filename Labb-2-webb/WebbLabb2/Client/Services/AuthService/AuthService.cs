@@ -8,48 +8,40 @@ namespace WebbLabb2.Client.Services.AuthService
     public class AuthService : IAuthService
     {
         private readonly HttpClient _httpClient;
-        private readonly AuthenticationStateProvider _authenticationStateProvider;
-        public event Action UserChanged;
-        
-        
-        public AuthService(HttpClient httpClient, AuthenticationStateProvider authenticationStateProvider)
+
+        public AuthService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _authenticationStateProvider = authenticationStateProvider; 
         }
-        public async Task<ServiceResponse<int>> Register(UserRegisterDto register)
+        public async Task<ServiceResponse<int>?> Register(UserRegisterDto register)
         {
             var result = await _httpClient.PostAsJsonAsync("user/register", register);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<int>>();
         }
 
-        public async Task<ServiceResponse<string>> Login(UserLoginDto login)
+        public async Task<ServiceResponse<string>?> Login(UserLoginDto login)
         {
             var result = await _httpClient.PostAsJsonAsync("user/login", login);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<string>>();
         }
 
 
-        public async Task<ServiceResponse<bool>> UpdateProfile(int userId, UserProfileDto newProfile)
+        public async Task<ServiceResponse<bool>?> UpdateProfile(int userId, UserProfileDto newProfile)
         {
             var result = await _httpClient.PostAsJsonAsync($"user/update/{userId}", newProfile);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 
-        public async Task<ServiceResponse<bool>> ChangePassword(int id, UserPasswordDto dto)
+        public async Task<ServiceResponse<bool>?> ChangePassword(int id, UserPasswordDto dto)
         {
             var result = await _httpClient.PostAsJsonAsync($"user/changepassword/{id}", dto.Password);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 
-        public async Task <UserProfileDto> GetUserById(int id)
+        public async Task<UserProfileDto> GetUserById(int id)
         {
-            var result = await _httpClient.GetFromJsonAsync<UserProfileDto>($"userid/{id}");
-            return result;
-        }
-        public async Task<bool> IsUserAuthenticated()
-        {
-            return (await _authenticationStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<UserProfileDto>>($"userid/{id}");
+            return result.Data;
         }
     }
 }

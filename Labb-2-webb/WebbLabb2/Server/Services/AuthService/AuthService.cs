@@ -14,13 +14,11 @@ namespace WebbLabb2.Server.Services.AuthService
     {
         private readonly StoreContext _context;
         private readonly IConfiguration _configuration;
-        private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthService(StoreContext context, IConfiguration configuration, IHttpContextAccessor contextAccessor)
+        public AuthService(StoreContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
-            _contextAccessor = contextAccessor;
         }
         public async Task<ServiceResponse<int>> RegisterUserAsync(UserModel user, string password)
         {

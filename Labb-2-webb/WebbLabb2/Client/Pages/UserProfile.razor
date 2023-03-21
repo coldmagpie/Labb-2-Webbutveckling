@@ -1,12 +1,7 @@
 ﻿@page "/profile"
-@using WebbLabb2.Client.Services.AuthService
-@using Microsoft.AspNetCore.Components
-@using WebbLabb2.Shared.DTOs
-@using System.Reflection.Metadata
-@using System.Security.Claims
-@inject IAuthService authService
+@inject IAuthService AuthService
 @attribute [Authorize]
-@inject AuthenticationStateProvider getAuthenticationStateAsync
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
 
 <AuthorizeView>
     <h3 class="m-3">Hi! You're logged in with <i>@currentProfile.FirstName @currentProfile.LastName</i>.</h3>
@@ -96,11 +91,11 @@ else
 
 @code {
 
-    UserPasswordDto newPassword = new UserPasswordDto();
+    UserPasswordDto newPassword = new ();
 
-    UserProfileDto currentProfile = new UserProfileDto();
+    UserProfileDto currentProfile = new ();
 
-    UserProfileDto newProfile = new UserProfileDto();
+    UserProfileDto newProfile = new ();
 
     bool isProfileSubmitted = false;
     bool isPasswordSubmitted = false;
@@ -108,12 +103,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
 
         var id = authstate.User.FindFirst(ClaimTypes.NameIdentifier);
             if (id != null)
             {
-               currentProfile = await authService.GetUserById(int.Parse(id.Value));
+               currentProfile = await AuthService.GetUserById(int.Parse(id.Value));
             }
     }
 
@@ -122,18 +117,17 @@ else
     {
         isPasswordSubmitted = true;
         StateHasChanged();
-        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var id = authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        await authService.ChangePassword(int.Parse(id), newPassword);
+        var authenstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var id = authenstate.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await AuthService.ChangePassword(int.Parse(id), newPassword);
     }
     private async Task UpdateProfile()
     {
         isProfileSubmitted = true;
         StateHasChanged();
-        var authstate = await getAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var id = authstate.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-        await authService.UpdateProfile(int.Parse(id), newProfile);
-
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var id = authstate.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        await AuthService.UpdateProfile(int.Parse(id), newProfile);
     }
 
 }

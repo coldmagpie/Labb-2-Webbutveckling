@@ -2,20 +2,12 @@ using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using DataAccess.DataAccess.Repositories;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Server.Extensions;
 using WebbLabb2.Server.Services.AuthService;
 using WebbLabb2.Shared.DTOs;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -32,7 +24,6 @@ builder.Services.AddDbContext<StoreContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
-builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 

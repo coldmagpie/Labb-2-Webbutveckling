@@ -1,8 +1,6 @@
 ﻿@page "/register"
-@using WebbLabb2.Client.Services.AuthService
-@using WebbLabb2.Shared.DTOs
-@inject IAuthService authService
-
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
 <h3 class="row row-cols-4 flex-column align-items-center mb-4">Register</h3>
 
 <EditForm Model="user" OnValidSubmit="HandleRegistration">
@@ -53,18 +51,25 @@
 </EditForm>
 
 @code {
-    UserRegisterDto user = new UserRegisterDto();
+    UserRegisterDto user = new ();
 
     string message = string.Empty;
     string messageCssClass = string.Empty;
 
     async Task HandleRegistration()
     {
-        var result = await authService.Register(user);
-        message = result.Message;
+        var result = await AuthService.Register(user);
+        message = "Register successed";
         if (result.Error)
+        {
             messageCssClass = "text-danger";
+        }
         else
+        {
             messageCssClass = "text-success";
+            Thread.Sleep(2000);
+            NavigationManager.NavigateTo("/login");
+        }
+            
     }
 }

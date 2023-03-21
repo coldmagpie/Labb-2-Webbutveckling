@@ -1,10 +1,6 @@
 ﻿@page "/product/{id:int}"
-@using WebbLabb2.Client.Services.ProductService
-@using WebbLabb2.Shared.DTOs
-@using WebbLabb2.Client.Services.CartService
-@inject IProductService productService
-@inject NavigationManager navigationManager
-@inject ICartService cartService
+@inject IProductService ProductService
+@inject ICartService CartService
 
 @if (product == null)
 {
@@ -49,7 +45,7 @@ else
     protected override async Task OnParametersSetAsync()
     {
         message = "Loading product...";
-        product = await productService.GetProductById(Id);
+        product = await ProductService.GetProductById(Id);
     }
 
     private async Task AddToCart()
@@ -59,7 +55,7 @@ else
             productId = product.Id
         };
 
-        await cartService.AddProductToCart(cartItem);
+        await CartService.AddProductToCart(cartItem);
     }
 
 }
