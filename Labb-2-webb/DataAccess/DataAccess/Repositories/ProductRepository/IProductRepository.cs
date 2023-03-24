@@ -1,12 +1,11 @@
-﻿
-using WebbLabb2.Shared;
+﻿using WebbLabb2.Shared;
 
-namespace DataAccess.DataAccess.Interfaces;
+namespace DataAccess.DataAccess.Repositories.ProductRepository;
 
 public interface IProductRepository<T, TU>
 {
-    Task <ServiceResponse<T>> AddProductAsync(TU item);
-    Task <ServiceResponse<T>>DeleteProductAsync(int id);
+    Task<ServiceResponse<T>> AddProductAsync(TU item);
+    Task<ServiceResponse<T>> DeleteProductAsync(int id);
     Task<ServiceResponse<T>> GetProductByIdAsync(int id);
     Task<ServiceResponse<List<T>>> GetProductsByCategory(string name);
     Task<ServiceResponse<List<T>>> GetAllAsync();

@@ -1,4 +1,4 @@
-﻿using DataAccess.DataAccess.Interfaces;
+﻿using DataAccess.DataAccess.Repositories.OrderRepository;
 using WebbLabb2.Shared.DTOs;
 
 namespace WebbLabb2.Server.Extensions

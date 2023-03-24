@@ -1,5 +1,5 @@
-﻿using DataAccess.DataAccess.Interfaces;
-using DataAccess.DataAccess.Models;
+﻿using DataAccess.DataAccess.Models;
+using DataAccess.DataAccess.Repositories.CategoryRepository;
 using WebbLabb2.Shared.DTOs;
 
 namespace WebbLabb2.Server.Extensions

@@ -1,13 +1,12 @@
 ﻿using DataAccess.DataAccess.DataContext;
-using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
-namespace DataAccess.DataAccess.Repositories;
+namespace DataAccess.DataAccess.Repositories.CategoryRepository;
 
-public class CategoryRepository:ICategoryRepository<CategoryModel, CategoryDto>
+public class CategoryRepository : ICategoryRepository<CategoryModel, CategoryDto>
 {
     public StoreContext _storeContext;
 
@@ -43,7 +42,7 @@ public class CategoryRepository:ICategoryRepository<CategoryModel, CategoryDto>
             response.Message = $"Category already exists!";
             return response;
         }
-       
+
         var newCategory = new CategoryModel()
         {
             Name = category.Name,
@@ -53,7 +52,7 @@ public class CategoryRepository:ICategoryRepository<CategoryModel, CategoryDto>
         await _storeContext.SaveChangesAsync();
         response.Error = false;
         response.Data = newCategory;
-    
+
         return response;
     }
 
@@ -90,7 +89,7 @@ public class CategoryRepository:ICategoryRepository<CategoryModel, CategoryDto>
             category.Name = dto.Name;
             await _storeContext.SaveChangesAsync();
             response.Error = false;
-            response.Data = new CategoryModel(){Name = category.Name};
+            response.Data = new CategoryModel() { Name = category.Name };
         }
 
         return response;

@@ -3,9 +3,8 @@ using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
-using DataAccess.DataAccess.Interfaces;
 
-namespace DataAccess.DataAccess.Repositories
+namespace DataAccess.DataAccess.Repositories.OrderRepository
 {
     public class OrderRepository : IOrderRepository
     {
@@ -77,7 +76,7 @@ namespace DataAccess.DataAccess.Repositories
                 order.OrderItems.Add(orderItem);
             }
 
-            
+
             await _storeContext.SaveChangesAsync();
             response.Data = order;
             return response;
@@ -90,7 +89,7 @@ namespace DataAccess.DataAccess.Repositories
             if (user == null)
             {
                 response.Error = true;
-                response.Message = "User does't exist!";
+                response.Message = "User doesn't exist!";
             }
 
             var order = await _storeContext.Orders
@@ -111,12 +110,12 @@ namespace DataAccess.DataAccess.Repositories
             if (user == null)
             {
                 response.Error = true;
-                response.Message = "User does't exist!";
+                response.Message = "User doesn't exist!";
             }
             var orders = await _storeContext.Orders
-                .Include(o=>o.OrderItems)
-                .ThenInclude(o=>o.Product)
-                .Where(u=>u.UserId == user.Id)
+                .Include(o => o.OrderItems)
+                .ThenInclude(o => o.Product)
+                .Where(u => u.UserId == user.Id)
                 .ToListAsync();
             response.Data = orders;
             return response;

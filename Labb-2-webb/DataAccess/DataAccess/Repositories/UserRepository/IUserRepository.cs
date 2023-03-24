@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using DataAccess.DataAccess.Models;
 using WebbLabb2.Shared;
 
-namespace DataAccess.DataAccess.Interfaces
+namespace DataAccess.DataAccess.Repositories.UserRepository
 {
     public interface IUserRepository<T>
     {

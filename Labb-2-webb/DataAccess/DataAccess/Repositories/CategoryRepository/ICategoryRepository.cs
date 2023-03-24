@@ -1,7 +1,6 @@
-﻿
-using WebbLabb2.Shared;
+﻿using WebbLabb2.Shared;
 
-namespace DataAccess.DataAccess.Interfaces;
+namespace DataAccess.DataAccess.Repositories.CategoryRepository;
 
 public interface ICategoryRepository<T, TU>
 {

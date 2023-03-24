@@ -18,7 +18,7 @@ else
     {
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
+                <div class="card m-4">
                     <div class="card-body">
                         <h5 class="card-title">Order</h5>
                         <h6 class="card-subtitle">OrderId: @order.Id</h6>
@@ -61,7 +61,7 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    List<OrderDto> orders = new List<OrderDto>();
+    List<OrderDto> orders = new ();
 
     UserProfileDto user = new ();
 

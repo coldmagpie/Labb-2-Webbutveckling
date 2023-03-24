@@ -41,8 +41,8 @@ else
     [Parameter]
     public int OrderId { get; set; }
 
-    OrderDto Order = null;
-    List<OrderItemsDto> OrderItems = null;
+    OrderDto Order;
+    List<OrderItemsDto> OrderItems;
 
     protected override async Task OnInitializedAsync()
     {

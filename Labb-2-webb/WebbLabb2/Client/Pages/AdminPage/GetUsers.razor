@@ -58,10 +58,7 @@
         if(searchText is not null)
         {
             await UserService.GetUserByEmail(searchText);
-            if (UserService.Users.Count == 0)
-            {
-                message = $"User with email '{searchText}' is not found, please check the spelling";
-            }
+            message = UserService.Users.Count == 0 ? $"User with email '{searchText}' is not found, please check the spelling" : "";
         }
         else
         {
@@ -102,7 +99,7 @@
 
     public async Task HandleSearch(KeyboardEventArgs args)
     {
-        if (args.Key is "Enter") 
+        if (args.Key is null or "Enter") 
         {
             if(string.IsNullOrEmpty(searchText))
             {

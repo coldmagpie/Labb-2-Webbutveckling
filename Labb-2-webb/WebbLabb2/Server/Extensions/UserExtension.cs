@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using IAuthService = WebbLabb2.Server.Services.AuthService.IAuthService;
 using WebbLabb2.Shared;
 using System.Net.Http;
+using DataAccess.DataAccess.Repositories.UserRepository;
 
 namespace WebbLabb2.Server.Extensions;
 
@@ -18,9 +18,8 @@ public static class UserExtension
     {
         app.MapPost("/user/register", RegisterUserHandlerAsync);
         app.MapPost("/user/login", LoginUserHandlerAsync);
-
-        app.MapPost("/user/update/{id}", UpdateHandlerAsync);
-        app.MapPost("/user/changepassword/{id}", ChangePasswordAsync);
+        app.MapPut("/user/update/{id}", UpdateHandlerAsync);
+        app.MapPut("/user/changepassword/{id}", ChangePasswordAsync);
         app.MapGet("/userid/{id}", GetUserById);
         app.MapGet("/useremail/{email}", GetUserByEmail);
         app.MapGet("/allusers", GetAllUsers);

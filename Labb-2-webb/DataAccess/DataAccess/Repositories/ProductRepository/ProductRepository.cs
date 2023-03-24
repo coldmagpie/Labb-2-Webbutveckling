@@ -1,11 +1,10 @@
 ﻿using DataAccess.DataAccess.DataContext;
-using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
-namespace DataAccess.DataAccess.Repositories;
+namespace DataAccess.DataAccess.Repositories.ProductRepository;
 
 public class ProductRepository : IProductRepository<ProductModel, ProductDto>
 {
@@ -40,7 +39,8 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         await _storeContext.Products.AddAsync(newProduct);
         await _storeContext.SaveChangesAsync();
         return new ServiceResponse<ProductModel>
-        {   Error = false,
+        {
+            Error = false,
             Message = "Product added!",
             Data = newProduct
         };
@@ -56,9 +56,11 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             response.Error = true;
             response.Message = $"Sorry, this is no product";
         }
-
-        response.Error = false;
-        response.Data = products;
+        else
+        {
+            response.Error = false;
+            response.Data = products;
+        }
 
         return response;
     }
@@ -94,7 +96,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             };
         }
 
-        var productList = await _storeContext.Products.Where(p=>p.CategoryId == category.Id).ToListAsync();
+        var productList = await _storeContext.Products.Where(p => p.CategoryId == category.Id).ToListAsync();
         return new ServiceResponse<List<ProductModel>>
         {
             Error = false,
@@ -111,7 +113,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             .ToListAsync();
         response.Error = false;
         response.Data = products;
-        
+
         return response;
     }
 

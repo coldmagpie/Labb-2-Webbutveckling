@@ -70,8 +70,8 @@ else
 @code {
 
     private List<CategoryDto> categories = new ();
-    ProductDto newProduct = new ProductDto();
-    bool isSubmitted = false;
+    ProductDto newProduct = new ();
+    bool isSubmitted;
 
     protected override async Task OnInitializedAsync()
     {

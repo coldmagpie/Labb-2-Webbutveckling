@@ -67,7 +67,7 @@ else
 
     private async Task DeleteProduct(int id)
     {
-        var result = ProductService.DeleteProductAsync(id);
+        await ProductService.DeleteProductAsync(id);
         await ProductService.GetProducts();
         NavigationManager.NavigateTo(NavigationManager.Uri, true);
     }

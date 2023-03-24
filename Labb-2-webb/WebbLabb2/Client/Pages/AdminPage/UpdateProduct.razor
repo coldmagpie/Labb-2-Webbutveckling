@@ -92,11 +92,11 @@ else
 }
 
 @code {
-    private ProductDto? product = null;
+    private ProductDto? product;
     private string message = string.Empty;
-    ProductDto updateProduct = new ProductDto();
+    ProductDto updateProduct = new ();
     List<CategoryDto> categories = new();
-    bool isSubmitted = false;
+    bool isSubmitted;
 
     [Parameter]
     public int Id { get; set; }
@@ -118,6 +118,6 @@ else
     {
         isSubmitted = true;
         StateHasChanged();
-        var result = await ProductService.UpdateProduct(product.Id, updateProduct);
+        await ProductService.UpdateProduct(product.Id, updateProduct);
     }
 }

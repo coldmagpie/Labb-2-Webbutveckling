@@ -42,11 +42,8 @@ namespace DataAccess.DataAccess.Repositories
                     Quantity = item.Quantity,
                     IsWeightable = product.IsWeightable
                 };
-
                 cartProducts.Data.Add(cartProduct);
-                cartProducts.Error = false;
             }
-
             return cartProducts;
         }
     }

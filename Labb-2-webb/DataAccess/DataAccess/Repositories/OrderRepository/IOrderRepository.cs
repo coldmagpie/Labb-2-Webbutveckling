@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WebbLabb2.Shared.DTOs;
 using WebbLabb2.Shared;
 
-namespace DataAccess.DataAccess.Interfaces
+namespace DataAccess.DataAccess.Repositories.OrderRepository
 {
     public interface IOrderRepository
     {

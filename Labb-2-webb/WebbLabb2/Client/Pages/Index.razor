@@ -12,9 +12,6 @@
 <div class="d-flex fs-4 justify-content-center align-items-center">@message</div>
 
 
-
-
-
 @code
 {
     [Parameter]
@@ -30,10 +27,7 @@
         if (searchText != null)
         {
             await ProductService.GetProductBySearchText(searchText);
-            if (ProductService.Products.Count == 0)
-            {
-                message = $"No products found for '{searchText}', please check the spelling";
-            }
+            message = ProductService.Products.Count == 0 ? $"No products found for '{searchText}', please check the spelling" : "";
         }
         else
         {

@@ -1,10 +1,9 @@
 ﻿using DataAccess.DataAccess.DataContext;
-using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 
-namespace DataAccess.DataAccess.Repositories
+namespace DataAccess.DataAccess.Repositories.UserRepository
 {
     public class UserRepository : IUserRepository<UserModel>
     {
@@ -24,15 +23,16 @@ namespace DataAccess.DataAccess.Repositories
                 response.Error = true;
                 response.Message = "No user found";
             }
-
-            response.Error = false;
-            response.Data = users;
-            
+            else
+            {
+                response.Error = false;
+                response.Data = users;
+            }
             return response;
         }
         public async Task<ServiceResponse<UserModel>> GetUserById(int userId)
         {
-            var user = await _storeContext.Users.FirstOrDefaultAsync(u=>u.Id == userId);
+            var user = await _storeContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user is null)
             {
                 return new ServiceResponse<UserModel>
