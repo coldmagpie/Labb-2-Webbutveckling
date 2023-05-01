@@ -1,5 +1,6 @@
 ﻿using DataAccess.DataAccess.Models;
-using DataAccess.DataAccess.Repositories.CategoryRepository;
+using DataAccess.DataAccess.Repositories.Interfaces;
+using DataAccess.DataAccess.UnitOfWork;
 using WebbLabb2.Shared.DTOs;
 
 namespace WebbLabb2.Server.Extensions
@@ -13,10 +14,10 @@ namespace WebbLabb2.Server.Extensions
             return app;
         }
 
-        private static async Task<IResult> GetAllCategories(ICategoryRepository<CategoryModel, CategoryDto> repo)
+        private static async Task<IResult> GetAllCategories(IUnitOfWork unitOfWork)
         {
-            var serviceResponse = await repo.GetAllCategories();
-            return serviceResponse.Error ? Results.BadRequest("Categories not found") : Results.Ok(serviceResponse);
+            var serviceResponse = await unitOfWork.CategoryRepository.GetAllCategories();
+            return serviceResponse.Error ? Results.NotFound("Categories not found") : Results.Ok(serviceResponse);
         }
     }
 }

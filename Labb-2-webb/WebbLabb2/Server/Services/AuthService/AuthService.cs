@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Models;
+using DataAccess.DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using WebbLabb2.Shared;
@@ -12,13 +13,13 @@ namespace WebbLabb2.Server.Services.AuthService
 {
     public class AuthService : IAuthService
     {
-        private readonly StoreContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AuthService(StoreContext context, IConfiguration configuration)
+        public AuthService(IConfiguration configuration, IUnitOfWork unitOfWork)
         {
-            _context = context;
             _configuration = configuration;
+            _unitOfWork = unitOfWork;
         }
         public async Task<ServiceResponse<int>> RegisterUserAsync(UserModel user, string password)
         {
@@ -36,14 +37,14 @@ namespace WebbLabb2.Server.Services.AuthService
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await _unitOfWork.UserRepository.AddUserAsync(user);
+            await _unitOfWork.Save();
 
             return new ServiceResponse<int>()
             {
                 Data = user.Id,
                 Error = false,
-                Message = "Register Successed!"
+                Message = "Register Succeed!"
             };
         }
 
@@ -67,7 +68,7 @@ namespace WebbLabb2.Server.Services.AuthService
                 };
             }
 
-            var user = await _context.Users.FirstAsync(u => u.Email == email);
+            var user = await _unitOfWork.UserRepository.GetUserAsync(email);
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
@@ -89,8 +90,8 @@ namespace WebbLabb2.Server.Services.AuthService
 
         public async Task<ServiceResponse<bool>> UpdateProfile(int userId, UserProfileDto dto)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
+            var user = await _unitOfWork.UserRepository.GetUserById(userId);
+            if (user is null)
             {
                 return new ServiceResponse<bool>
                 {
@@ -104,14 +105,14 @@ namespace WebbLabb2.Server.Services.AuthService
             user.Email = dto.Email;
             user.PhoneNumber = dto.PhoneNumber;
             user.Adress = dto.Adress;
-            await _context.SaveChangesAsync();
+            await _unitOfWork.Save();
 
             return new ServiceResponse<bool> { Data = true, Message = "Profile has been updated." };
         }
 
         public async Task<ServiceResponse<bool>> ChangePassword(int userId, string newPassword)
         {
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _unitOfWork.UserRepository.GetUserById(userId);
             if (user == null)
             {
                 return new ServiceResponse<bool>
@@ -126,7 +127,7 @@ namespace WebbLabb2.Server.Services.AuthService
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
-            await _context.SaveChangesAsync();
+            await _unitOfWork.Save();
 
             return new ServiceResponse<bool> { Data = true, Message = "Password has been changed." };
         }
@@ -166,7 +167,8 @@ namespace WebbLabb2.Server.Services.AuthService
 
         public async Task<bool> CheckUserExistsAsync(string email)
         {
-            return await _context.Users.AnyAsync(u => u.Email.Equals(email));
+            var user = await _unitOfWork.UserRepository.GetUserAsync(email);
+            return user is null ? false : true;
         }
     }
 }

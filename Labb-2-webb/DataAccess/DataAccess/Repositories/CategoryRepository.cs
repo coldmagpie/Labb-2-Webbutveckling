@@ -1,12 +1,13 @@
 ﻿using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Models;
+using DataAccess.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
-namespace DataAccess.DataAccess.Repositories.CategoryRepository;
+namespace DataAccess.DataAccess.Repositories;
 
-public class CategoryRepository : ICategoryRepository<CategoryModel, CategoryDto>
+public class CategoryRepository : ICategoryRepository
 {
     public StoreContext _storeContext;
 
@@ -32,7 +33,7 @@ public class CategoryRepository : ICategoryRepository<CategoryModel, CategoryDto
         return response;
     }
 
-    public async Task<ServiceResponse<CategoryModel>> AddCategoryAsync(CategoryDto category)
+    public async Task<ServiceResponse<CategoryModel>> AddCategoryAsync(CategoryModel category)
     {
         var response = new ServiceResponse<CategoryModel>();
         var exist = await _storeContext.Categories.AnyAsync(c => c.Name.Equals(category.Name));
@@ -43,15 +44,10 @@ public class CategoryRepository : ICategoryRepository<CategoryModel, CategoryDto
             return response;
         }
 
-        var newCategory = new CategoryModel()
-        {
-            Name = category.Name,
-        };
-
-        await _storeContext.Categories.AddAsync(newCategory);
+        await _storeContext.Categories.AddAsync(category);
         await _storeContext.SaveChangesAsync();
         response.Error = false;
-        response.Data = newCategory;
+        response.Data = category;
 
         return response;
     }
@@ -75,7 +71,7 @@ public class CategoryRepository : ICategoryRepository<CategoryModel, CategoryDto
         return response;
     }
 
-    public async Task<ServiceResponse<CategoryModel>> UpdateCategoryAsync(int id, CategoryDto dto)
+    public async Task<ServiceResponse<CategoryModel>> UpdateCategoryAsync(int id, CategoryModel dto)
     {
         var response = new ServiceResponse<CategoryModel>();
         var category = await _storeContext.Categories.FirstOrDefaultAsync(c => c.Id == id);

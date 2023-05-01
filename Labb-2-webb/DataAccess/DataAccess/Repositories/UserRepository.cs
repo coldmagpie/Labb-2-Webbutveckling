@@ -1,11 +1,13 @@
 ﻿using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Models;
+using DataAccess.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
+using WebbLabb2.Shared.DTOs;
 
-namespace DataAccess.DataAccess.Repositories.UserRepository
+namespace DataAccess.DataAccess.Repositories
 {
-    public class UserRepository : IUserRepository<UserModel>
+    public class UserRepository : IUserRepository
     {
         private readonly StoreContext _storeContext;
 
@@ -30,21 +32,44 @@ namespace DataAccess.DataAccess.Repositories.UserRepository
             }
             return response;
         }
-        public async Task<ServiceResponse<UserModel>> GetUserById(int userId)
+
+        public async Task<UserModel> GetUserAsync(string email)
         {
-            var user = await _storeContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            if (user is null)
-            {
-                return new ServiceResponse<UserModel>
-                {
-                    Error = true,
-                    Message = "User not found."
-                };
-            }
-            return new ServiceResponse<UserModel> { Data = user, Error = false };
+            var user = await _storeContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return user;
         }
 
-        public async Task<ServiceResponse<List<UserModel>>> GetUserByEmail(string email)
+        public async Task<UserModel?> GetUserById(int userId)
+        {
+            var user = await _storeContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            return user;
+        }
+
+        public async Task<ServiceResponse<UserModel>> AddUserAsync(UserModel newUser)
+        {
+            var response = new ServiceResponse<UserModel>();
+            var exist = await _storeContext.Users.AnyAsync(p => p.Email.Equals(newUser.Email));
+            if (exist)
+            {
+                response.Error = true;
+                response.Message = "The email already exists";
+            }
+            else
+            {
+                
+            }
+
+            await _storeContext.Users.AddAsync(newUser);
+            await _storeContext.SaveChangesAsync();
+            return new ServiceResponse<UserModel>
+            {
+                Error = false,
+                Message = "user registered!",
+                Data = newUser
+            };
+        }
+
+        public async Task<ServiceResponse<List<UserModel>>> GetUsersByEmail(string email)
         {
             var response = new ServiceResponse<List<UserModel>>();
             var user = await _storeContext.Users.Where(u => u.Email.Contains(email)).ToListAsync();

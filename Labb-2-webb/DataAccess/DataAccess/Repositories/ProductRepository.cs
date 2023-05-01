@@ -1,12 +1,13 @@
 ﻿using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Models;
+using DataAccess.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;
 
-namespace DataAccess.DataAccess.Repositories.ProductRepository;
+namespace DataAccess.DataAccess.Repositories;
 
-public class ProductRepository : IProductRepository<ProductModel, ProductDto>
+public class ProductRepository : IProductRepository
 {
     private readonly StoreContext _storeContext;
 
@@ -15,7 +16,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         _storeContext = storeContext;
     }
 
-    public async Task<ServiceResponse<ProductModel>> AddProductAsync(ProductDto dto)
+    public async Task<ServiceResponse<ProductModel>> AddProductAsync(ProductModel dto)
     {
         var response = new ServiceResponse<ProductModel>();
         var exist = await _storeContext.Products.AnyAsync(p => p.Name.Equals(dto.Name) || p.Number.Equals(dto.Number));
@@ -25,24 +26,13 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
             response.Message = "This product already exists";
         }
 
-        var newProduct = new ProductModel()
-        {
-            Number = dto.Number,
-            Name = dto.Name,
-            CategoryId = dto.CategoryId,
-            Description = dto.Description,
-            IsWeightable = dto.IsWeightable,
-            ImageUrl = dto.ImageUrl,
-            Price = dto.Price,
-            InStock = dto.InStock
-        };
-        await _storeContext.Products.AddAsync(newProduct);
+        await _storeContext.Products.AddAsync(dto);
         await _storeContext.SaveChangesAsync();
         return new ServiceResponse<ProductModel>
         {
             Error = false,
             Message = "Product added!",
-            Data = newProduct
+            Data = dto
         };
     }
 
@@ -64,6 +54,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
 
         return response;
     }
+
 
     public async Task<ServiceResponse<ProductModel>> GetProductByIdAsync(int id)
     {
@@ -117,7 +108,7 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         return response;
     }
 
-    public async Task<ServiceResponse<ProductModel>> UpdateAsync(int id, ProductDto dto)
+    public async Task<ServiceResponse<ProductModel>> UpdateAsync(int id, ProductModel newProduct)
     {
         var response = new ServiceResponse<ProductModel>();
         var product = await _storeContext.Products.FirstOrDefaultAsync(p => p.Id == id);
@@ -130,14 +121,14 @@ public class ProductRepository : IProductRepository<ProductModel, ProductDto>
         }
         else
         {
-            product.Number = dto.Number;
-            product.Name = dto.Name;
-            product.CategoryId = dto.CategoryId;
-            product.Description = dto.Description;
-            product.IsWeightable = dto.IsWeightable;
-            product.ImageUrl = dto.ImageUrl;
-            product.Price = dto.Price;
-            product.InStock = dto.InStock;
+            product.Number = newProduct.Number;
+            product.Name = newProduct.Name;
+            product.CategoryId = newProduct.CategoryId;
+            product.Description = newProduct.Description;
+            product.IsWeightable = newProduct.IsWeightable;
+            product.ImageUrl = newProduct.ImageUrl;
+            product.Price = newProduct.Price;
+            product.InStock = newProduct.InStock;
             await _storeContext.SaveChangesAsync();
         }
 

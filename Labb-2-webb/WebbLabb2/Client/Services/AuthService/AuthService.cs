@@ -28,20 +28,21 @@ namespace WebbLabb2.Client.Services.AuthService
 
         public async Task<ServiceResponse<bool>?> UpdateProfile(int userId, UserProfileDto newProfile)
         {
-            var result = await _httpClient.PostAsJsonAsync($"user/update/{userId}", newProfile);
+            var result = await _httpClient.PutAsJsonAsync($"user/update/{userId}", newProfile);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 
         public async Task<ServiceResponse<bool>?> ChangePassword(int id, UserPasswordDto dto)
         {
-            var result = await _httpClient.PostAsJsonAsync($"user/changepassword/{id}", dto.Password);
+            var result = await _httpClient.PutAsJsonAsync($"user/changepassword/{id}", dto.Password);
             return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
         }
 
         public async Task<UserProfileDto> GetUserById(int id)
         {
-            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<UserProfileDto>>($"userid/{id}");
-            return result.Data;
+            var result = await _httpClient.GetFromJsonAsync<UserProfileDto>($"userid/{id}");
+
+            return result;
         }
     }
 }

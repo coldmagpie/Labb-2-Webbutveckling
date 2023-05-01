@@ -1,5 +1,5 @@
 ﻿using DataAccess.DataAccess.DataContext;
-using DataAccess.DataAccess.Interfaces;
+using DataAccess.DataAccess.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Shared;
 using WebbLabb2.Shared.DTOs;

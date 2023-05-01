@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Http;
 using IAuthService = WebbLabb2.Server.Services.AuthService.IAuthService;
 using WebbLabb2.Shared;
 using System.Net.Http;
-using DataAccess.DataAccess.Repositories.UserRepository;
+using DataAccess.DataAccess.Repositories.Interfaces;
+using DataAccess.DataAccess.UnitOfWork;
 
 namespace WebbLabb2.Server.Extensions;
 
@@ -33,47 +34,47 @@ public static class UserExtension
         return response.Error ? Results.BadRequest(response) : Results.Ok(response);
     }
 
-    private static async Task<IResult> RegisterUserHandlerAsync(IAuthService authService, UserRegisterDto dto)
+    private static async Task<IResult> RegisterUserHandlerAsync(IAuthService authService, UserRegisterDto newUser)
     {
         var model = new UserModel
         {
-            FirstName = dto.FirstName,
-            LastName = dto.LastName,
-            Email = dto.Email,
-            PhoneNumber = dto.PhoneNumber,
-            Adress = dto.Adress
+            FirstName = newUser.FirstName,
+            LastName = newUser.LastName,
+            Email = newUser.Email,
+            PhoneNumber = newUser.PhoneNumber,
+            Adress = newUser.Adress
         };
-        var response = await authService.RegisterUserAsync(model, dto.Password);
-        return response.Error ? Results.BadRequest(response) : Results.Ok(response);
+        var response = await authService.RegisterUserAsync(model,newUser.Password);
+        return response.Error ? Results.BadRequest("register failed") : Results.Ok(response);
     }
 
 
-    public static async Task<IResult> UpdateHandlerAsync(IAuthService authService, int id, [FromBody] UserProfileDto newProfile)
+    public static async Task<IResult> UpdateHandlerAsync(IAuthService authService, int id, [FromBody]UserProfileDto newProfile)
     {
         var response = await authService.UpdateProfile(id, newProfile);
 
-        return response.Error ? Results.BadRequest(response) : Results.Ok(response);
+        return response.Error ? Results.BadRequest("profile update failed") : Results.Ok(response);
     }
 
-    public static async Task<IResult> ChangePasswordAsync(IAuthService authService,[FromBody] string password, int id)
+    public static async Task<IResult> ChangePasswordAsync(IAuthService authService, [FromBody] string password, int id)
     {
         var response = await authService.ChangePassword(id, password);
-        return response.Error ? Results.BadRequest(response) : Results.Ok(response);
+        return response.Error ? Results.BadRequest("change password failed") : Results.Ok(response);
     }
-    private static async Task<IResult> GetUserById(IUserRepository<UserModel> userRepository, int id)
+    private static async Task<IResult> GetUserById(IUnitOfWork unitOfWork, int id)
     {
-        var response = await userRepository.GetUserById(id);
-        return response.Error ? Results.BadRequest(response) : Results.Ok(response);
+        var response = await unitOfWork.UserRepository.GetUserById(id);
+        return response is null ? Results.BadRequest("user not found") : Results.Ok(response);
     }
-    private static async Task<IResult> GetUserByEmail(IUserRepository<UserModel> userRepository,string email)
+    private static async Task<IResult> GetUserByEmail(IUnitOfWork unitOfWork,string email)
     {
-        var response = await userRepository.GetUserByEmail(email);
-        return response.Error ? Results.BadRequest(response) : Results.Ok(response);
+        var response = await unitOfWork.UserRepository.GetUserAsync(email);
+        return response is null ? Results.BadRequest("user not found") : Results.Ok(response);
     }
-    private static async Task<IResult> GetAllUsers(IUserRepository<UserModel> userRepository)
+    private static async Task<IResult> GetAllUsers(IUnitOfWork unitOfWork)
     {
-        var response = await userRepository.GetAllUsers();
-        return response.Error ? Results.BadRequest(response) : Results.Ok(response);
+        var response = await unitOfWork.UserRepository.GetAllUsers();
+        return response is null ? Results.BadRequest("user not found") : Results.Ok(response);
     }
 }
 

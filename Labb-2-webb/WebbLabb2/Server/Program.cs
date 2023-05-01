@@ -1,26 +1,23 @@
 using DataAccess.DataAccess.DataContext;
-using DataAccess.DataAccess.Interfaces;
 using DataAccess.DataAccess.Models;
 using DataAccess.DataAccess.Repositories;
-using DataAccess.DataAccess.Repositories.CategoryRepository;
-using DataAccess.DataAccess.Repositories.OrderRepository;
-using DataAccess.DataAccess.Repositories.ProductRepository;
-using DataAccess.DataAccess.Repositories.UserRepository;
+using DataAccess.DataAccess.Repositories.Interfaces;
+using DataAccess.DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using WebbLabb2.Server.Extensions;
 using WebbLabb2.Server.Services.AuthService;
-using WebbLabb2.Shared.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<ICategoryRepository<CategoryModel, CategoryDto>, CategoryRepository>();
-builder.Services.AddScoped<IProductRepository<ProductModel, ProductDto>, ProductRepository>();
-builder.Services.AddScoped<IUserRepository<UserModel>, UserRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddDbContext<StoreContext>(options =>
 {

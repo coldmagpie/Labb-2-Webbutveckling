@@ -1,4 +1,5 @@
-﻿using DataAccess.DataAccess.Interfaces;
+﻿using DataAccess.DataAccess.Repositories.Interfaces;
+using DataAccess.DataAccess.UnitOfWork;
 using Microsoft.EntityFrameworkCore.Storage;
 using WebbLabb2.Shared.DTOs;
 
@@ -13,11 +14,11 @@ namespace WebbLabb2.Server.Extensions
             return app;
         }
 
-        private static async Task<IResult> GetCartProducts(ICartRepository repo, List<CartItemDto> items)
+        private static async Task<IResult> GetCartProducts(IUnitOfWork unitOfWork, List<CartItemDto> items)
         {
-            var serviceResponse = await repo.GetCartProducts(items);
+            var serviceResponse = await unitOfWork.CartRepository.GetCartProducts(items);
 
-            return serviceResponse.Error ? Results.BadRequest("Items not found") : Results.Ok(serviceResponse);
+            return serviceResponse.Error ? Results.NotFound("Items not found") : Results.Ok(serviceResponse);
         }
     }
 }
