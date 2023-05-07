@@ -1,6 +1,6 @@
 # LABB 2 APIer
 
 This was the second lab for our Web Application but first full-stack lab for us
-This is a simple e-commerce website and purpose of this lab was to practice working both frontend and backend with API request/response. At the same time we hade to create our own database a design our own page. 
+This is a simple e-commerce website and purpose of this lab was to practice working both frontend and backend with API request/response. At the same time we hade to create our own database and design our own page. 
 
-"I didn't realize how important commits were when working on big projects, and as a result, I haven't been committing properly. However, I am determined to change this bad habit going forward, starting with this project!"
+"I didn't realize how important commits were when working on big projects, and as a result, I haven't been committing properly. However, I will change this bad habit in my next project!"
