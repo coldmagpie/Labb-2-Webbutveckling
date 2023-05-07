@@ -54,10 +54,6 @@ namespace DataAccess.DataAccess.Repositories
                 response.Error = true;
                 response.Message = "The email already exists";
             }
-            else
-            {
-                
-            }
 
             await _storeContext.Users.AddAsync(newUser);
             await _storeContext.SaveChangesAsync();

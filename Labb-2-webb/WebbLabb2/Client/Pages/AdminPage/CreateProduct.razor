@@ -1,7 +1,7 @@
 ﻿@page "/admin/createproduct"
 @inject IProductService ProductService
 @inject ICategoryService CategoryService
-@attribute [Authorize (Roles = "Admin")]
+@attribute [Authorize (Roles = "Administrator")]
 
 <h3 class="mb-5 row d-flex flex-column align-items-center fw-bolder">Create Product</h3>
 @if (!isSubmitted)

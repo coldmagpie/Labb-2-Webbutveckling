@@ -4,7 +4,7 @@
 @inject IUserService UserService
 @implements IDisposable
 @inject NavigationManager NavigationManager
-@attribute [Authorize (Roles = "Admin")]
+@attribute [Authorize (Roles = "Administrator")]
 
 <div class="input-group">
     <input @bind-value="searchText"
@@ -55,7 +55,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if(searchText is not null)
+        if(searchText != null)
         {
             await UserService.GetUserByEmail(searchText);
             message = UserService.Users.Count == 0 ? $"User with email '{searchText}' is not found, please check the spelling" : "";

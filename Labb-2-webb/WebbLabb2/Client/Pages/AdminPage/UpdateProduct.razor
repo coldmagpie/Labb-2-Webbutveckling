@@ -1,7 +1,7 @@
 ﻿@page "/admin/updateproduct/{id:int}"
 @inject IProductService ProductService
 @inject ICategoryService CategoryService
-@attribute [Authorize (Roles = "Admin")]
+@attribute [Authorize (Roles = "Administrator")]
 
 @if (product == null)
 {

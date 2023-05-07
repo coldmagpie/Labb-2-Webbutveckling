@@ -2,6 +2,7 @@
 using DataAccess.DataAccess.Models;
 using DataAccess.DataAccess.Repositories.Interfaces;
 using DataAccess.DataAccess.UnitOfWork;
+using DataAccess.Migrations;
 using WebbLabb2.Shared.DTOs;
 
 namespace WebbLabb2.Server.Extensions
@@ -10,13 +11,13 @@ namespace WebbLabb2.Server.Extensions
     {
         public static WebApplication MapProductEndpoints(this WebApplication app)
         {
-            app.MapPost("/createproduct", CreateProductAsync);
+            app.MapPost("/createproduct", CreateProductAsync).RequireAuthorization("Administrator");
             app.MapGet("/products", GetProductsAsync);
             app.MapGet("/products/{id}", GetProductById);
             app.MapGet("/categoryproducts/{category}", GetProductByCategoryAsync);
             app.MapGet("/searchproduct/{text}", GetProductBySearchText);
-            app.MapPut("/product/update/{id}", UpdateProductAsync);
-            app.MapDelete("/deleteproduct/{id}", DeleteProductAsync);
+            app.MapPut("/product/update/{id}", UpdateProductAsync).RequireAuthorization("Administrator");
+            app.MapDelete("/deleteproduct/{id}", DeleteProductAsync).RequireAuthorization("Administrator");
 
             return app;
         }

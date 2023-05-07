@@ -1,9 +1,13 @@
+using System.Security.Claims;
+using System.Text;
 using DataAccess.DataAccess.DataContext;
 using DataAccess.DataAccess.Models;
 using DataAccess.DataAccess.Repositories;
 using DataAccess.DataAccess.Repositories.Interfaces;
 using DataAccess.DataAccess.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WebbLabb2.Server.Extensions;
 using WebbLabb2.Server.Services.AuthService;
 
@@ -23,6 +27,32 @@ builder.Services.AddDbContext<StoreContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("StoreDb");
     options.UseSqlServer(connectionString);
+});
+
+//builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthentication(config =>
+{
+    config.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    config.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(config =>
+{
+    config.RequireHttpsMetadata = false;
+    config.SaveToken = true;
+    config.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSecrets:Secret"])),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
+
+builder.Services.AddAuthorization(op =>
+{
+    op.AddPolicy("Administrator", policy =>
+    {
+        policy.RequireRole("Administrator");
+    });
 });
 
 var app = builder.Build();
@@ -46,6 +76,8 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapProductEndpoints();

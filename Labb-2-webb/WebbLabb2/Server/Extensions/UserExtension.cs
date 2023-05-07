@@ -1,15 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System.Runtime.CompilerServices;
 using DataAccess.DataAccess.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebbLabb2.Shared.DTOs;
-using Microsoft.AspNetCore.Http;
-
 using IAuthService = WebbLabb2.Server.Services.AuthService.IAuthService;
-using WebbLabb2.Shared;
-using System.Net.Http;
-using DataAccess.DataAccess.Repositories.Interfaces;
 using DataAccess.DataAccess.UnitOfWork;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebbLabb2.Server.Extensions;
 
@@ -22,8 +17,8 @@ public static class UserExtension
         app.MapPut("/user/update/{id}", UpdateHandlerAsync);
         app.MapPut("/user/changepassword/{id}", ChangePasswordAsync);
         app.MapGet("/userid/{id}", GetUserById);
-        app.MapGet("/useremail/{email}", GetUserByEmail);
-        app.MapGet("/allusers", GetAllUsers);
+        app.MapGet("/useremail/{email}", GetUserByEmail).RequireAuthorization("Administrator");
+        app.MapGet("/allusers", GetAllUsers).RequireAuthorization("Administrator");
 
         return app;
     }
@@ -64,17 +59,17 @@ public static class UserExtension
     private static async Task<IResult> GetUserById(IUnitOfWork unitOfWork, int id)
     {
         var response = await unitOfWork.UserRepository.GetUserById(id);
-        return response is null ? Results.BadRequest("user not found") : Results.Ok(response);
+        return response is null ? Results.NotFound("user not found") : Results.Ok(response);
     }
     private static async Task<IResult> GetUserByEmail(IUnitOfWork unitOfWork,string email)
     {
         var response = await unitOfWork.UserRepository.GetUserAsync(email);
-        return response is null ? Results.BadRequest("user not found") : Results.Ok(response);
+        return response is null ? Results.NotFound("user not found") : Results.Ok(response);
     }
     private static async Task<IResult> GetAllUsers(IUnitOfWork unitOfWork)
     {
         var response = await unitOfWork.UserRepository.GetAllUsers();
-        return response is null ? Results.BadRequest("user not found") : Results.Ok(response);
+        return response.Error ? Results.NotFound("user not found") : Results.Ok(response);
     }
 }
 
